@@ -1,5 +1,4 @@
 ## Test task for trainer of YLab company.
-Test task on FastAPI for training by YLab company.
 ----
 Status: [![linter](https://github.com/Morozov33/foods_menu_api/actions/workflows/linter.yml/badge.svg)](https://github.com/Morozov33/foods_menu_api/actions/workflows/linter.yml)
 ----
