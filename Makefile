@@ -1,5 +1,5 @@
-start: #starting dev server for FastAPI
-	poetry run python3 manage.py runserver
+start: #start uvicorn server for FastAPI
+	poetry run python3 uvicorn main:app --reload
 
 lint: #linter for code
 	poetry run flake8  <dir_names>
