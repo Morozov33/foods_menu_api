@@ -1,8 +1,8 @@
 start: #start uvicorn server for FastAPI
-	poetry run python3 uvicorn main:app --reload
+	poetry run uvicorn menu_app.main:app --reload
 
 lint: #linter for code
-	poetry run flake8  <dir_names>
+	poetry run flake8 menu_app
 
 migrate: #make and add migrations
 	poetry run python3
