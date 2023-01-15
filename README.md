@@ -8,4 +8,4 @@
 3. Запуск локального сервера с приложением командой `make start` из директории проекта. Устанавливаются все зависимости и к БД, указанной в переменной в `POSTGRES_DB_URL`, применяется последняя миграция из папки `foods_menu_api/migrations/versions`. После остановки приложения из базы данных удаляются все записи.
 ----
 Скриншот успешных тестов к первому заданию:
-![First test](https://github.com/Morozov33/foods_menu_api/screnshoots/first_test_15-01-23.png)
+![First test](https://github.com/Morozov33/foods_menu_api/blob/32cbc7212700602e4a10141b0a4daa5b890400c8/screnshoots/first_test_15-01-23.png)
