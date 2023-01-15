@@ -39,9 +39,12 @@ def on_shutdown():
 
 @app.get("/")
 def root():
-    return {"message": f"Hello, everyone! "\
-                       f"It's simple food menu to contain the three tables: "\
-                       f"Menu, Submenu and Dish. Let's play!"
+    return {
+        "message": (
+            """Hello, everyone!\
+ It's simple food menu to contain the three tables:\
+ Menu, Submenu and Dish. Let's play!"""
+        )
     }
 
 
