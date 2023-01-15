@@ -3,6 +3,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
     from menu_app.submenu_model import Submenu
+    from menu_app.submenu_model import Menu
 
 
 class DishBase(SQLModel):
@@ -10,17 +11,17 @@ class DishBase(SQLModel):
     description: str
     price: float
     submenu_id: Optional[int] = Field(default=None, foreign_key="submenu.id")
+    menu_id: Optional[int] = Field(default=None, foreign_key="menu.id")
 
 
 class Dish(DishBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    menu: Optional["Menu"] = Relationship(back_populates="dishes")
     submenu: Optional["Submenu"] = Relationship(back_populates="dishes")
 
 
 class DishRead(DishBase):
     id: int
-    title: str
-    description: str
 
 
 class DishCreate(DishBase):
@@ -31,4 +32,4 @@ class DishUpdate(SQLModel):
     id: Optional[int] = None
     title: Optional[str] = None
     description: Optional[str] = None
-    submenu_id: Optional[int] = None
+    price: Optional[float] = None

@@ -9,11 +9,12 @@ if TYPE_CHECKING:
 class SubmenuBase(SQLModel):
     title: str = Field(index=True)
     description: str
+    menu_id: Optional[int] = Field(default=None, foreign_key="menu.id")
+    dishes_count: Optional[int] = None
 
 
 class Submenu(SubmenuBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    menu_id: Optional[int] = Field(default=None, foreign_key="menu.id")
     menu: Optional["Menu"] = Relationship(back_populates="submenus")
     dishes: List["Dish"] = Relationship(back_populates="submenu")
 
@@ -24,8 +25,6 @@ class SubmenuCreate(SubmenuBase):
 
 class SubmenuRead(SubmenuBase):
     id: int
-    title: str
-    description: str
 
 
 class SubmenuUpdate(SQLModel):

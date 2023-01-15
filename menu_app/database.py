@@ -1,13 +1,13 @@
 import os
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import Session, create_engine
 
 
-def get_engine():
-    POSTGRES_DB_URL = os.getenv('POSTGRES_DB_URL')
-    DEBUG = os.getenv('DEBUG')
-    engine = create_engine(POSTGRES_DB_URL, echo=bool(DEBUG))
-    return engine
+# database_url = os.getenv('POSTGRES_DB_URL')
+DEBUG = os.getenv('DEBUG')
+database_url = "postgresql+psycopg2://postgres@localhost/food_menu"
+engine = create_engine(database_url, echo=True)
 
 
-def connect_db_and_create_tables():
-    SQLModel.metadata.create_all(get_engine())
+def get_session():
+    with Session(engine) as session:
+        yield session

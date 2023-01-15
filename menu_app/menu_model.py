@@ -3,16 +3,20 @@ from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
     from menu_app.submenu_model import Submenu
+    from menu_app.submenu_model import Dish
 
 
 class MenuBase(SQLModel):
     title: str
     description: str
+    submenus_count: Optional[int] = None
+    dishes_count: Optional[int] = None
 
 
 class Menu(MenuBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     submenus: List["Submenu"] = Relationship(back_populates="menu")
+    dishes: List["Dish"] = Relationship(back_populates="menu")
 
 
 class MenuRead(MenuBase):
