@@ -4,9 +4,9 @@ start: #start uvicorn server for FastAPI
 lint: #linter for code
 	poetry run flake8 menu_app
 
-migrate: #make and add migrations
-	poetry run python3
-	poetry run python3
+migrate: #make and add migrations by Alembic
+	poetry run alembic revision --autogenerate -m "migrate"
+	poetry run alembic upgrade head
 
 test: #start pytest
 	poetry run python3
