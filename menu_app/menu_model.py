@@ -15,12 +15,18 @@ class MenuBase(SQLModel):
 
 class Menu(MenuBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    submenus: List["Submenu"] = Relationship(back_populates="menu")
-    dishes: List["Dish"] = Relationship(back_populates="menu")
+    submenus: List["Submenu"] = Relationship(
+            sa_relationship_kwargs={"cascade": "delete"},
+            back_populates="menu",
+)
+    dishes: List["Dish"] = Relationship(
+            sa_relationship_kwargs={"cascade": "delete"},
+            back_populates="menu",
+)
 
 
 class MenuRead(MenuBase):
-    id: int
+    id: str
 
 
 class MenuCreate(MenuBase):

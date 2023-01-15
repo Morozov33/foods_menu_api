@@ -16,7 +16,10 @@ class SubmenuBase(SQLModel):
 class Submenu(SubmenuBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     menu: Optional["Menu"] = Relationship(back_populates="submenus")
-    dishes: List["Dish"] = Relationship(back_populates="submenu")
+    dishes: List["Dish"] = Relationship(
+            sa_relationship_kwargs={"cascade": "delete"},
+            back_populates="submenu",
+)
 
 
 class SubmenuCreate(SubmenuBase):
@@ -24,7 +27,7 @@ class SubmenuCreate(SubmenuBase):
 
 
 class SubmenuRead(SubmenuBase):
-    id: int
+    id: str
 
 
 class SubmenuUpdate(SQLModel):

@@ -30,7 +30,6 @@ def on_startup():
 def on_shutdown():
 
     # Clear DB
-    # SQLModel.metadata.drop_all(engine)
     with Session(engine) as session:
         session.exec(delete(Dish))
         session.exec(delete(Submenu))
@@ -40,7 +39,10 @@ def on_shutdown():
 
 @app.get("/")
 def root():
-    return {"message": "Hello World!"}
+    return {"message": f"Hello, everyone! "\
+                       f"It's simple food menu to contain the three tables: "\
+                       f"Menu, Submenu and Dish. Let's play!"
+    }
 
 
 @app.get("/api/v1/menus", response_model=List[MenuRead])
@@ -65,10 +67,15 @@ def read_menu(
                 [func.count(Submenu.id)]
             ).where(Submenu.menu_id == menu_id)
     ).one()
+    menu.dishes_count = session.exec(
+            select(
+                [func.count(Dish.id)]
+            ).where(Dish.menu_id == menu_id)
+    ).one()
     return menu
 
 
-@app.post("/api/v1/menus", response_model=MenuRead)
+@app.post("/api/v1/menus", response_model=MenuRead, status_code=201)
 def create_menu(
         *,
         session: Session = Depends(get_session),
@@ -143,7 +150,11 @@ def read_submenu(
     return submenu
 
 
-@app.post("/api/v1/menus/{menu_id}/submenus", response_model=SubmenuRead)
+@app.post(
+    "/api/v1/menus/{menu_id}/submenus",
+    response_model=SubmenuRead,
+    status_code=201,
+)
 def create_submenu(
         *,
         menu_id: int,
@@ -231,7 +242,8 @@ def read_dish(
 
 @app.post(
         "/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes",
-        response_model=DishRead
+        response_model=DishRead,
+        status_code=201,
 )
 def create_dish(
         *,

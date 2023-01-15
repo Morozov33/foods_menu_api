@@ -21,7 +21,8 @@ class Dish(DishBase, table=True):
 
 
 class DishRead(DishBase):
-    id: int
+    id: str
+    price: str
 
 
 class DishCreate(DishBase):
@@ -32,4 +33,4 @@ class DishUpdate(SQLModel):
     id: Optional[int] = None
     title: Optional[str] = None
     description: Optional[str] = None
-    price: Optional[float] = None
+    price: Optional[str] = None
