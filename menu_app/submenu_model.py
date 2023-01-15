@@ -19,7 +19,7 @@ class Submenu(SubmenuBase, table=True):
     dishes: List["Dish"] = Relationship(
             sa_relationship_kwargs={"cascade": "delete"},
             back_populates="submenu",
-)
+    )
 
 
 class SubmenuCreate(SubmenuBase):

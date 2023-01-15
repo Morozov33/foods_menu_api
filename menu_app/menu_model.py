@@ -18,11 +18,11 @@ class Menu(MenuBase, table=True):
     submenus: List["Submenu"] = Relationship(
             sa_relationship_kwargs={"cascade": "delete"},
             back_populates="menu",
-)
+    )
     dishes: List["Dish"] = Relationship(
             sa_relationship_kwargs={"cascade": "delete"},
             back_populates="menu",
-)
+    )
 
 
 class MenuRead(MenuBase):
