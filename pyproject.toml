@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Dmitrii Morozov <33morozov@gmail.com>"]
 readme = "README.md"
-packages = [{include = "foods_menu_api"}]
+packages = [{include = "menu_app"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
