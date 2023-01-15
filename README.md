@@ -1,8 +1,8 @@
 ## Test task for trainer of YLab company.
-###Status: [![linter](https://github.com/Morozov33/foods_menu_api/actions/workflows/linter.yml/badge.svg)](https://github.com/Morozov33/foods_menu_api/actions/workflows/linter.yml)
+### Status: [![linter](https://github.com/Morozov33/foods_menu_api/actions/workflows/linter.yml/badge.svg)](https://github.com/Morozov33/foods_menu_api/actions/workflows/linter.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a01595bc13c6dadfd0ad/maintainability)](https://codeclimate.com/github/Morozov33/foods_menu_api/maintainability)
 ----
-It's usinig:
+### It's usinig:
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
