@@ -6,6 +6,8 @@ if TYPE_CHECKING:
 
 
 class MenuBase(SQLModel):
+
+    # Base model for Menu
     title: str
     description: str
     submenus_count: Optional[int] = None
@@ -13,6 +15,8 @@ class MenuBase(SQLModel):
 
 
 class Menu(MenuBase, table=True):
+
+    # Main table model for Menu
     id: Optional[int] = Field(default=None, primary_key=True)
     submenus: List["Submenu"] = Relationship(
             sa_relationship_kwargs={"cascade": "delete"},

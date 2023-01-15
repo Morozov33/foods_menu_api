@@ -7,6 +7,8 @@ if TYPE_CHECKING:
 
 
 class SubmenuBase(SQLModel):
+
+    # Base model for Submenu
     title: str = Field(index=True)
     description: str
     menu_id: Optional[int] = Field(default=None, foreign_key="menu.id")
@@ -14,6 +16,8 @@ class SubmenuBase(SQLModel):
 
 
 class Submenu(SubmenuBase, table=True):
+
+    # Main table model for Submenu
     id: Optional[int] = Field(default=None, primary_key=True)
     menu: Optional["Menu"] = Relationship(back_populates="submenus")
     dishes: List["Dish"] = Relationship(

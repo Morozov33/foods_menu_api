@@ -6,6 +6,8 @@ if TYPE_CHECKING:
 
 
 class DishBase(SQLModel):
+
+    # Base model for Dish
     title: str = Field(index=True)
     description: str
     price: float
@@ -13,6 +15,8 @@ class DishBase(SQLModel):
 
 
 class Dish(DishBase, table=True):
+
+    # Main table model for Dish
     id: Optional[int] = Field(default=None, primary_key=True)
     submenu: Optional["Submenu"] = Relationship(back_populates="dishes")
 

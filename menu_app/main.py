@@ -1,6 +1,3 @@
-import os
-from pathlib import Path
-from dotenv import load_dotenv
 from typing import List
 from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import Session, select, delete
@@ -15,21 +12,10 @@ from menu_app.dish_model import Dish, DishRead, DishCreate, DishUpdate
 app = FastAPI()
 
 
-@app.on_event("startup")
-def on_startup():
-
-    # Build paths inside the project like this: BASE_DIR / 'subdir'.
-    BASE_DIR = Path(__file__).resolve().parent.parent
-
-    # Load envroinments variable
-    env_path = os.path.join(BASE_DIR, '.env')
-    load_dotenv(dotenv_path=env_path)
-
-
 @app.on_event("shutdown")
 def on_shutdown():
 
-    # Clear DB
+    # Clear DB when app is shutdown
     with Session(engine) as session:
         session.exec(delete(Dish))
         session.exec(delete(Submenu))
@@ -39,11 +25,13 @@ def on_shutdown():
 
 @app.get("/")
 def root():
+
+    # Welcome message from root
     return {
         "message": (
             """Hello, everyone!\
- It's simple food menu to contain the three tables:\
- Menu, Submenu and Dish. Let's play!"""
+It's simple food menu to contain the three tables:\
+Menu, Submenu and Dish. Let's play!"""
         )
     }
 
@@ -65,11 +53,15 @@ def read_menu(
     menu = session.get(Menu, menu_id)
     if not menu:
         raise HTTPException(status_code=404, detail="menu not found")
+
+    # Count all submenus
     menu.submenus_count = session.exec(
             select(
                 [func.count(Submenu.id)]
             ).where(Submenu.menu_id == menu_id)
     ).one()
+
+    # Count all dishes, using Dish JOIN Submenu
     menu.dishes_count = session.exec(
             select(
                 [func.count(Dish.id)]
@@ -145,6 +137,8 @@ def read_submenu(
     submenu = session.get(Submenu, submenu_id)
     if not submenu:
         raise HTTPException(status_code=404, detail="submenu not found")
+
+    # Count all dishes
     submenu.dishes_count = session.exec(
             select(
                 [func.count(Dish.id)]
