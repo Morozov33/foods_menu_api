@@ -1,8 +1,8 @@
 """migrate
 
-Revision ID: 00afbedd0655
-Revises: 2f7e8dd75171
-Create Date: 2023-01-14 18:37:04.195337
+Revision ID: c9c9d712dc9f
+Revises: 
+Create Date: 2023-01-15 22:19:10.217439
 
 """
 from alembic import op
@@ -11,8 +11,8 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '00afbedd0655'
-down_revision = '2f7e8dd75171'
+revision = 'c9c9d712dc9f'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -22,6 +22,8 @@ def upgrade() -> None:
     op.create_table('menu',
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('submenus_count', sa.Integer(), nullable=True),
+    sa.Column('dishes_count', sa.Integer(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -29,6 +31,7 @@ def upgrade() -> None:
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('menu_id', sa.Integer(), nullable=True),
+    sa.Column('dishes_count', sa.Integer(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['menu_id'], ['menu.id'], ),
     sa.PrimaryKeyConstraint('id')
