@@ -73,7 +73,7 @@ def read_menu(
     menu.dishes_count = session.exec(
             select(
                 [func.count(Dish.id)]
-            ).where(Dish.menu_id == menu_id)
+            ).join(Submenu).where(Submenu.menu_id == menu_id)
     ).one()
     return menu
 
@@ -256,7 +256,6 @@ def create_dish(
         submenu_id: int,
 ):
     db_dish = Dish.from_orm(dish)
-    db_dish.menu_id = menu_id
     db_dish.submenu_id = submenu_id
     session.add(db_dish)
     session.commit()
