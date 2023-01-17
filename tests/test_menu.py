@@ -53,3 +53,17 @@ def test_read_menus(session: Session, client: TestClient):
     assert data[1]["title"] == menu_2.title
     assert data[1]["description"] == menu_2.description
     assert data[1]["id"] == str(menu_2.id)
+
+
+def test_read_menu(session: Session, client: TestClient):
+    menu_1 = Menu(title="Menu 1", description="Menu description 1")
+    session.add(menu_1)
+    session.commit()
+
+    response = client.get(f"/api/v1/menus/{menu_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["title"] == menu_1.title
+    assert data["description"] == menu_1.description
+    assert data["id"] == str(menu_1.id)
