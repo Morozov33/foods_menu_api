@@ -1,5 +1,6 @@
 name: coverage
   # run coverage
+on: [push]
 jobs:
   build:
     runs-on: macos-12
