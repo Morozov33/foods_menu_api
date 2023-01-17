@@ -1,9 +1,6 @@
 name: coverage
   # run coverage
 on: [push]
-env:
-  # Setting an environment variable with the value of a configuration variable
-  env_var: ${{ vars.ENV_CONTEXT_VAR }}
 jobs:
   build:
     runs-on: macos-12
@@ -19,7 +16,7 @@ jobs:
       - name: Code Climate Coverage Action
         uses: paambaati/codeclimate-action@v3.0.0
         env:
-          POSTGRES_DB_URL: ${{ vars.TEST_DB_URL }}
+          POSTGRES_DB_URL: ${{ secrets.DATABASE_URL }}
           CC_TEST_REPORTER_ID: bf13f88464c7c469a34b22861b3087423ee16ef18478c6e28b05d13dc096f7c5
         with:
           coverageCommand: make coverage
