@@ -19,6 +19,7 @@ def test_create_menu(client: TestClient):
 def test_create_menu_incomplete(client: TestClient):
     # No description
     response = client.post("/api/v1/menus", json={"title": "Menu 1"})
+
     assert response.status_code == 422
 
 
@@ -31,6 +32,7 @@ def test_create_menu_invalid(client: TestClient):
             "description": "Menu description 1",
         },
     )
+
     assert response.status_code == 422
 
 
@@ -45,7 +47,6 @@ def test_read_menus(session: Session, client: TestClient):
     data = response.json()
 
     assert response.status_code == 200
-
     assert len(data) == 2
     assert data[0]["title"] == menu_1.title
     assert data[0]["description"] == menu_1.description
@@ -67,3 +68,32 @@ def test_read_menu(session: Session, client: TestClient):
     assert data["title"] == menu_1.title
     assert data["description"] == menu_1.description
     assert data["id"] == str(menu_1.id)
+
+
+def test_update_menu(session: Session, client: TestClient):
+    menu_1 = Menu(title="Menu 1", description="Menu description 1")
+    session.add(menu_1)
+    session.commit()
+
+    response = client.patch(
+            f"/api/v1/menus/{menu_1.id}",
+            json={"title": "Update menu 1"},
+    )
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["title"] == "Update menu 1"
+    assert data["description"] == "Menu description 1"
+    assert data["id"] == str(menu_1.id)
+
+
+def test_delete_menu(session: Session, client: TestClient):
+    menu_1 = Menu(title="Menu 1", description="Menu description 1")
+    session.add(menu_1)
+    session.commit()
+
+    response = client.delete(f"/api/v1/menus/{menu_1.id}")
+    menu_in_db = session.get(Menu, menu_1.id)
+
+    assert response.status_code == 200
+    assert menu_in_db is None
