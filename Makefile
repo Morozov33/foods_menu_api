@@ -12,4 +12,4 @@ test: #start pytest
 	poetry run pytest
 
 coverage: #start code coverage and write report is xml-file for CodeClimate
-	poetry run pytest --cov-report= --cov=menu_app tests/
+	poetry run pytest --cov-report xml --cov=menu_app tests/
