@@ -55,6 +55,14 @@ def test_read_menus(session: Session, client: TestClient):
     assert data[1]["id"] == str(menu_2.id)
 
 
+def test_read_menus_is_empty(session: Session, client: TestClient):
+    response = client.get("/api/v1/menus")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data) == 0
+
+
 def test_read_menu(session: Session, client: TestClient):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     session.add(menu_1)

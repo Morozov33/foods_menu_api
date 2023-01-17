@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from sqlmodel import Session
-from menu_app.main import Dish
+from menu_app.main import Menu, Submenu, Dish
 
 
 def test_create_dish(client: TestClient):
@@ -75,6 +75,26 @@ def test_read_dishes(session: Session, client: TestClient):
     assert data[1]["description"] == dish_2.description
     assert data[1]["id"] == str(dish_2.id)
     assert data[1]["price"] == "33.15"
+
+
+def test_read_dishes_is_empty(session: Session, client: TestClient):
+    menu = Menu(title="Menu 1", description="Menu description 1")
+    submenu = Submenu(
+            title="Submenu 1",
+            description="Submenu description 1",
+            menu_id=1
+    )
+    session.add(menu)
+    session.add(submenu)
+    session.commit()
+
+    response = client.get(
+            f"/api/v1/menus/{menu.id}/submenus/{submenu.id}/dishes"
+    )
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data) == 0
 
 
 def test_read_dish(session: Session, client: TestClient):

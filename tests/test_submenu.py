@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from sqlmodel import Session
-from menu_app.main import Submenu
+from menu_app.main import Menu, Submenu
 
 
 def test_create_submenu(client: TestClient):
@@ -66,6 +66,18 @@ def test_read_submenus(session: Session, client: TestClient):
     assert data[1]["description"] == submenu_2.description
     assert data[1]["id"] == str(submenu_2.id)
     assert data[1]["menu_id"] == submenu_2.menu_id
+
+
+def test_read_submenus_is_empty(session: Session, client: TestClient):
+    menu = Menu(title="Menu 1", description="Menu description 1")
+    session.add(menu)
+    session.commit()
+
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert len(data) == 0
 
 
 def test_read_submenu(session: Session, client: TestClient):
