@@ -13,6 +13,6 @@ jobs:
           poetry install
       - name: tests
         env:
-          POSTGRES_DB_URL: "${{ vars.TEST_DB_URL }}"
+          POSTGRES_DB_URL: "sqlite://"
         run: |
           make test
