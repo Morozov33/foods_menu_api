@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 from menu_app.main import Menu
@@ -6,8 +5,8 @@ from menu_app.main import Menu
 
 def test_create_menu(client: TestClient):
     response = client.post(
-            "/api/v1/menus/",
-            json={"title": "Menu 1", "description": "Menu description 1"},
+                "/api/v1/menus/",
+                json={"title": "Menu 1", "description": "Menu description 1"},
     )
     data = response.json()
 
