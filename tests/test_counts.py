@@ -101,6 +101,18 @@ def test_count_dishes(session: Session, client: TestClient):
     assert data["submenus_count"] == 2
     assert data["dishes_count"] == 3
 
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["dishes_count"] == 2
+
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_2.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["dishes_count"] == 1
+
     response = client.delete(
             f"/api/v1/menus/1/submenus/{dish_2.submenu_id}/dishes/{dish_2.id}"
     )
@@ -113,6 +125,18 @@ def test_count_dishes(session: Session, client: TestClient):
     assert response.status_code == 200
     assert data["submenus_count"] == 2
     assert data["dishes_count"] == 2
+
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["dishes_count"] == 1
+
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_2.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["dishes_count"] == 1
 
     response = client.delete(
                     f"/api/v1/menus/{menu.id}/submenus/{dish_3.submenu.id}"
@@ -128,6 +152,18 @@ def test_count_dishes(session: Session, client: TestClient):
     assert data["submenus_count"] == 2
     assert data["dishes_count"] == 1
 
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["dishes_count"] == 1
+
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_2.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["dishes_count"] == 0
+
     response = client.delete(
                     f"/api/v1/menus/{menu.id}/submenus/{dish_1.submenu.id}"
                     f"/dishes/{dish_1.id}"
@@ -140,4 +176,16 @@ def test_count_dishes(session: Session, client: TestClient):
 
     assert response.status_code == 200
     assert data["submenus_count"] == 2
+    assert data["dishes_count"] == 0
+
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["dishes_count"] == 0
+
+    response = client.get(f"/api/v1/menus/{menu.id}/submenus/{submenu_2.id}")
+    data = response.json()
+
+    assert response.status_code == 200
     assert data["dishes_count"] == 0
