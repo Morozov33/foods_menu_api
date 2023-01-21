@@ -24,7 +24,7 @@ services:
 
   db_food_menu:
     container_name: db_food_menu
-    image: postgres:13.9-alpine
+    image: postgres:15.1-alpine
     expose:
       - 5432
     networks:

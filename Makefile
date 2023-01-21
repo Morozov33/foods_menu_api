@@ -26,4 +26,4 @@ test: #start pytest
 	export DATABASE_URL=sqlite:// && poetry run pytest
 
 coverage: #start code coverage and write report is xml-file for CodeClimate
-	poetry run pytest --cov-report xml --cov=menu_app tests/
+	export DATABASE_URL=sqlite:// && poetry run pytest --cov-report xml --cov=menu_app tests/
