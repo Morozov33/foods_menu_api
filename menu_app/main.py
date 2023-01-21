@@ -30,8 +30,8 @@ def root():
     return {
         "message": (
             """Hello, everyone!\
-It's simple food menu to contain the three tables:\
-Menu, Submenu and Dish. Let's play!"""
+ It's simple food menu to contain the three tables:\
+ Menu, Submenu and Dish. Let's play!"""
         )
     }
 

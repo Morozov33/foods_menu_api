@@ -19,7 +19,7 @@ def get_database_url():
 
 
 # Create engine for DB
-engine = create_engine(get_database_url(), echo=True)
+engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
 
 
 def get_session():
