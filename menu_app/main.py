@@ -173,7 +173,6 @@ def create_submenu(
 def update_submenu(
         *,
         session: Session = Depends(get_session),
-        menu_id: int,
         submenu: SubmenuUpdate,
         submenu_id: int,
 ):
@@ -193,7 +192,6 @@ def update_submenu(
 def delete_submenu(
         *,
         session: Session = Depends(get_session),
-        menu_id: int,
         submenu_id: int,
 ):
     submenu = session.get(Submenu, submenu_id)
@@ -211,7 +209,6 @@ def delete_submenu(
 def read_dishes(
         *,
         session: Session = Depends(get_session),
-        menu_id: int,
         submenu_id: int,
 ):
     dishes = session.exec(
@@ -227,8 +224,6 @@ def read_dishes(
 def read_dish(
         *,
         session: Session = Depends(get_session),
-        menu_id: int,
-        submenu_id: int,
         dish_id: int,
 ):
     dish = session.get(Dish, dish_id)
@@ -246,7 +241,6 @@ def create_dish(
         *,
         session: Session = Depends(get_session),
         dish: DishCreate,
-        menu_id: int,
         submenu_id: int,
 ):
     db_dish = Dish.from_orm(dish)
@@ -265,8 +259,6 @@ def update_dish(
         *,
         session: Session = Depends(get_session),
         dish: DishUpdate,
-        menu_id: int,
-        submenu_id: int,
         dish_id: int,
 ):
     db_dish = session.get(Dish, dish_id)
@@ -285,8 +277,6 @@ def update_dish(
 def delete_dish(
         *,
         session: Session = Depends(get_session),
-        menu_id: int,
-        submenu_id: int,
         dish_id: int,
 ):
     dish = session.get(Dish, dish_id)
