@@ -16,7 +16,7 @@ jobs:
       - name: Code Climate Coverage Action
         uses: paambaati/codeclimate-action@v3.0.0
         env:
-          POSTGRES_DB_URL: "sqlite://"
+          DATABASE_URL: "sqlite://"
           CC_TEST_REPORTER_ID: bf13f88464c7c469a34b22861b3087423ee16ef18478c6e28b05d13dc096f7c5
         with:
           coverageCommand: make coverage
