@@ -11,7 +11,7 @@ result: # Show tests result
 	docker logs tests_menu_app
 
 localstart: # Use last migration and local start uvicorn server for app
-	export DATABASE_URL=postgresql+psycopg2://postgres@localhost/<database_name>
+	# export DATABASE_URL=postgresql+psycopg2://postgres@localhost/<database_name>
 	poetry run alembic upgrade head
 	poetry run uvicorn menu_app.main:app --reload
 
@@ -23,7 +23,7 @@ migrate: #make migrations by Alembic
 	poetry run alembic revision --autogenerate -m "migrate"
 
 test: #start pytest
-	poetry run pytest
+	export DATABASE_URL=sqlite:// && poetry run pytest
 
 coverage: #start code coverage and write report is xml-file for CodeClimate
 	poetry run pytest --cov-report xml --cov=menu_app tests/
