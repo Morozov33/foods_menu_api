@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+
+  menu_app:
+    container_name: menu_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: >
+      sh -c "alembic upgrade head &&
+             uvicorn menu_app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+      "
+    networks:
+      - web_network
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db_food_menu:5432/food_menu_db
+    depends_on:
+      db_food_menu:
+        condition: service_healthy
+
+
+  db_food_menu:
+    container_name: db_food_menu
+    image: postgres:13.9-alpine
+    expose:
+      - 5432
+    networks:
+      - web_network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=food_menu_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 10s
+      retries: 100
+
+
+networks:
+  web_network:
+    name: web_network
