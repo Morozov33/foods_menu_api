@@ -16,7 +16,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db_food_menu:5432/food_menu_db
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db_food_menu:5432/food_menu_db
     depends_on:
       db_food_menu:
         condition: service_healthy
