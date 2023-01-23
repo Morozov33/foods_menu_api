@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@menu_app:5432/food_menu_db
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@menu_app:5432/food_menu_db
     command: pytest -vv
     networks:
       - test_network
