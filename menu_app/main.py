@@ -78,7 +78,7 @@ async def create_menu(
         menu: MenuCreate,
 ):
     db_menu = await Menu.from_orm(menu)
-    await session.add(db_menu)
+    session.add(db_menu)
     await session.commit()
     await session.refresh(db_menu)
     return db_menu
@@ -97,7 +97,7 @@ async def update_menu(
     menu_data = menu.dict(exclude_unset=True)
     for key, value in menu_data.items():
         await setattr(db_menu, key, value)
-    await session.add(db_menu)
+    session.add(db_menu)
     await session.commit()
     await session.refresh(db_menu)
     return db_menu
@@ -112,7 +112,7 @@ async def delete_menu(
     menu = await session.get(Menu, menu_id)
     if not menu:
         raise HTTPException(status_code=404, detail="menu not found")
-    await session.delete(menu)
+    session.delete(menu)
     await session.commit()
     return {"ok": True}
 
@@ -165,7 +165,7 @@ async def create_submenu(
 ):
     db_submenu = await Submenu.from_orm(submenu)
     db_submenu.menu_id = menu_id
-    await session.add(db_submenu)
+    session.add(db_submenu)
     await session.commit()
     await session.refresh(db_submenu)
     return db_submenu
@@ -187,7 +187,7 @@ async def update_submenu(
     submenu_data = submenu.dict(exclude_unset=True)
     for key, value in submenu_data.items():
         await setattr(db_submenu, key, value)
-    await session.add(db_submenu)
+    session.add(db_submenu)
     await session.commit()
     await session.refresh(db_submenu)
     return db_submenu
@@ -202,7 +202,7 @@ async def delete_submenu(
     submenu = await session.get(Submenu, submenu_id)
     if not submenu:
         raise HTTPException(status_code=404, detail="submenu not found")
-    await session.delete(submenu)
+    session.delete(submenu)
     await session.commit()
     return {"ok": True}
 
@@ -250,7 +250,7 @@ async def create_dish(
 ):
     db_dish = await Dish.from_orm(dish)
     db_dish.submenu_id = submenu_id
-    await session.add(db_dish)
+    session.add(db_dish)
     await session.commit()
     await session.refresh(db_dish)
     return db_dish
@@ -272,7 +272,7 @@ async def update_dish(
     dish_data = dish.dict(exclude_unset=True)
     for key, value in dish_data.items():
         await setattr(db_dish, key, value)
-    await session.add(db_dish)
+    session.add(db_dish)
     await session.commit()
     await session.refresh(db_dish)
     return db_dish
@@ -287,6 +287,6 @@ async def delete_dish(
     dish = await session.get(Dish, dish_id)
     if not dish:
         raise HTTPException(status_code=404, detail="dish not found")
-    await session.delete(dish)
+    session.delete(dish)
     await session.commit()
     return {"ok": True}
