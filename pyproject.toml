@@ -13,6 +13,7 @@ alembic = "^1.9.1"
 sqlmodel = "^0.0.8"
 pytest = "^7.2.1"
 psycopg2-binary = "^2.9.5"
+aioredis = "2.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
