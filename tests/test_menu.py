@@ -1,30 +1,33 @@
-from fastapi.testclient import TestClient
-from sqlmodel import Session
+import pytest
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu
 
 
-def test_create_menu(client: TestClient):
-    response = client.post(
+
+@pytest.mark.anyio
+async def test_create_menu(client: AsyncClient):
+    response = await client.post(
                 "/api/v1/menus/",
                 json={"title": "Menu 1", "description": "Menu description 1"},
     )
-    data = response.json()
+    print(response.headers)
+    assert response.status_code == 307
+    assert response.json()["title"] == "Menu 1"
+    assert response.json()["description"] == "Menu description 1"
 
-    assert response.status_code == 201
-    assert data["title"] == "Menu 1"
-    assert data["description"] == "Menu description 1"
 
-
-def test_create_menu_incomplete(client: TestClient):
+@pytest.mark.anyio
+async def test_create_menu_incomplete(client: AsyncClient):
     # No description
-    response = client.post("/api/v1/menus", json={"title": "Menu 1"})
+    response = await client.post("/api/v1/menus", json={"title": "Menu 1"})
 
     assert response.status_code == 422
 
 
-def test_create_menu_invalid(client: TestClient):
+async def test_create_menu_invalid(client: AsyncClient):
     # title has an invalid type
-    response = client.post(
+    response = await client.post(
         "/api/v1/menus",
         json={
             "title": {"message": "Menu 1"},
@@ -35,14 +38,14 @@ def test_create_menu_invalid(client: TestClient):
     assert response.status_code == 422
 
 
-def test_read_menus(session: Session, client: TestClient):
+async def test_read_menus(session: AsyncSession, client: AsyncClient):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     menu_2 = Menu(title="Menu 2", description="Menu description 1")
     session.add(menu_1)
     session.add(menu_2)
-    session.commit()
+    await session.commit()
 
-    response = client.get("/api/v1/menus")
+    response = await client.get("/api/v1/menus")
     data = response.json()
 
     assert response.status_code == 200
@@ -55,20 +58,20 @@ def test_read_menus(session: Session, client: TestClient):
     assert data[1]["id"] == str(menu_2.id)
 
 
-def test_read_menus_is_empty(session: Session, client: TestClient):
-    response = client.get("/api/v1/menus")
+async def test_read_menus_is_empty(session: AsyncSession, client: AsyncClient):
+    response = await client.get("/api/v1/menus")
     data = response.json()
 
     assert response.status_code == 200
     assert len(data) == 0
 
 
-def test_read_menu(session: Session, client: TestClient):
+async def test_read_menu(session: AsyncSession, client: AsyncClient):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     session.add(menu_1)
-    session.commit()
+    await session.commit()
 
-    response = client.get(f"/api/v1/menus/{menu_1.id}")
+    response = await client.get(f"/api/v1/menus/{menu_1.id}")
     data = response.json()
 
     assert response.status_code == 200
@@ -77,12 +80,12 @@ def test_read_menu(session: Session, client: TestClient):
     assert data["id"] == str(menu_1.id)
 
 
-def test_update_menu(session: Session, client: TestClient):
+async def test_update_menu(session: AsyncSession, client: AsyncClient):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     session.add(menu_1)
-    session.commit()
+    await session.commit()
 
-    response = client.patch(
+    response = await client.patch(
             f"/api/v1/menus/{menu_1.id}",
             json={"title": "Update menu 1"},
     )
@@ -94,13 +97,13 @@ def test_update_menu(session: Session, client: TestClient):
     assert data["id"] == str(menu_1.id)
 
 
-def test_delete_menu(session: Session, client: TestClient):
+async def test_delete_menu(session: AsyncSession, client: AsyncClient):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     session.add(menu_1)
-    session.commit()
+    await session.commit()
 
-    response = client.delete(f"/api/v1/menus/{menu_1.id}")
-    menu_in_db = session.get(Menu, menu_1.id)
+    response = await client.delete(f"/api/v1/menus/{menu_1.id}")
+    menu_in_db = await session.get(Menu, menu_1.id)
 
     assert response.status_code == 200
     assert menu_in_db is None

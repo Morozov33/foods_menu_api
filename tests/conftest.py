@@ -1,27 +1,39 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlmodel import Session, SQLModel, create_engine
+import os
+from httpx import AsyncClient
+from sqlmodel import SQLModel
 from sqlmodel.pool import StaticPool
-from menu_app.main import app, get_session
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from menu_app.main import app
+from menu_app.database import get_session
 
+
+os.environ.get("DATABASE_URL")
 
 @pytest.fixture(name="session")
-def session():
-    engine = create_engine(
-        "sqlite://",
+async def session():
+
+    async_engine = create_async_engine(
+            "sqlite+aiosqlite://",
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    SQLModel.metadata.create_all(engine)
-    with Session(engine) as session:
+
+    async with async_engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+
+    async with AsyncSession(async_engine, expire_on_commit=False) as session:
         yield session
 
 
 @pytest.fixture(name="client")
-def client(session: Session):
-    def get_session_override():
-        return session
+async def client(session: AsyncSession):
+
+    async def get_session_override():
+        yield session
+
     app.dependency_overrides[get_session] = get_session_override
-    client = TestClient(app)
-    yield client
+    async with AsyncClient(app=app, base_url="http:/") as client:
+        yield client
     app.dependency_overrides.clear()
