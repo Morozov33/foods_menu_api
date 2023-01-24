@@ -22,7 +22,7 @@ migrate: #make migrations by Alembic
 	export DATABASE_URL=postgresql+psycopg2://postgres@localhost/<database_name> &&
 	poetry run alembic revision --autogenerate -m "migrate"
 
-localtest: #start pytest
+test: #start pytest
 	export DATABASE_URL=sqlite:// && poetry run pytest
 
 coverage: #start code coverage and write report is xml-file for CodeClimate
