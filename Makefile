@@ -11,7 +11,7 @@ result: # Show tests result
 	docker logs tests_menu_app
 
 localstart: # Use last migration and local start uvicorn server for app
-	export DATABASE_URL=postgresql+asyncpg://postgres@localhost/food_menu_db && poetry run alembic upgrade head && poetry run uvicorn menu_app.main:app --reload
+	export DATABASE_URL=postgresql+asyncpg://postgres@localhost:5433/food_menu_db && poetry run alembic upgrade head && poetry run uvicorn menu_app.main:app --reload
 
 lint: #linter for code
 	poetry run flake8 menu_app tests
