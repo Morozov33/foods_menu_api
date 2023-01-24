@@ -18,9 +18,9 @@ async def on_shutdown():
 
     # Clear DB when app is shutdown
     async with AsyncSession(engine) as session:
-        await session.exec(delete(Dish))
-        await session.exec(delete(Submenu))
-        await session.exec(delete(Menu))
+        await session.execute(delete(Dish))
+        await session.execute(delete(Submenu))
+        await session.execute(delete(Menu))
         await session.commit()
 
 
@@ -42,8 +42,8 @@ async def read_menus(
         *,
         session: AsyncSession = Depends(get_session),
 ):
-    menus = await session.exec(select(Menu)).all()
-    return menus
+    menus = await session.execute(select(Menu))
+    return menus.scalars().all()
 
 
 @app.get("/api/v1/menus/{menu_id}", response_model=MenuRead)
@@ -56,18 +56,20 @@ async def read_menu(
         raise HTTPException(status_code=404, detail="menu not found")
 
     # Count all submenus
-    menu.submenus_count = await session.exec(
+    submenus_count = await session.execute(
             select(
                 [func.count(Submenu.id)]
             ).where(Submenu.menu_id == menu_id)
-    ).one()
+    )
+    menu.submenus_count = submenus_count.scalar()
 
     # Count all dishes, using Dish JOIN Submenu
-    menu.dishes_count = await session.exec(
+    dishes_count = await session.execute(
             select(
                 [func.count(Dish.id)]
             ).join(Submenu).where(Submenu.menu_id == menu_id)
-    ).one()
+    )
+    menu.dishes_count = dishes_count.scalar()
     return menu
 
 
@@ -77,7 +79,7 @@ async def create_menu(
         session: AsyncSession = Depends(get_session),
         menu: MenuCreate,
 ):
-    db_menu = await Menu.from_orm(menu)
+    db_menu = Menu.from_orm(menu)
     session.add(db_menu)
     await session.commit()
     await session.refresh(db_menu)
@@ -96,7 +98,7 @@ async def update_menu(
         raise HTTPException(status_code=404, detail="menu not found")
     menu_data = menu.dict(exclude_unset=True)
     for key, value in menu_data.items():
-        await setattr(db_menu, key, value)
+        setattr(db_menu, key, value)
     session.add(db_menu)
     await session.commit()
     await session.refresh(db_menu)
@@ -112,7 +114,7 @@ async def delete_menu(
     menu = await session.get(Menu, menu_id)
     if not menu:
         raise HTTPException(status_code=404, detail="menu not found")
-    session.delete(menu)
+    await session.delete(menu)
     await session.commit()
     return {"ok": True}
 
@@ -123,10 +125,10 @@ async def read_submenus(
         session: AsyncSession = Depends(get_session),
         menu_id: int
 ):
-    submenus = await session.exec(
+    submenus = await session.execute(
             select(Submenu).where(Submenu.menu_id == menu_id)
-    ).all()
-    return submenus
+    )
+    return submenus.scalars().all()
 
 
 @app.get(
@@ -144,11 +146,12 @@ async def read_submenu(
         raise HTTPException(status_code=404, detail="submenu not found")
 
     # Count all dishes
-    submenu.dishes_count = await session.exec(
+    dishes_count = await session.execute(
             select(
                 [func.count(Dish.id)]
             ).where(Dish.submenu_id == submenu_id)
-    ).one()
+    )
+    submenu.dishes_count = dishes_count.scalars().one()
     return submenu
 
 
@@ -163,7 +166,7 @@ async def create_submenu(
         session: AsyncSession = Depends(get_session),
         submenu: SubmenuCreate,
 ):
-    db_submenu = await Submenu.from_orm(submenu)
+    db_submenu = Submenu.from_orm(submenu)
     db_submenu.menu_id = menu_id
     session.add(db_submenu)
     await session.commit()
@@ -186,7 +189,7 @@ async def update_submenu(
         raise HTTPException(status_code=404, detail="submenu not found")
     submenu_data = submenu.dict(exclude_unset=True)
     for key, value in submenu_data.items():
-        await setattr(db_submenu, key, value)
+        setattr(db_submenu, key, value)
     session.add(db_submenu)
     await session.commit()
     await session.refresh(db_submenu)
@@ -202,7 +205,7 @@ async def delete_submenu(
     submenu = await session.get(Submenu, submenu_id)
     if not submenu:
         raise HTTPException(status_code=404, detail="submenu not found")
-    session.delete(submenu)
+    await session.delete(submenu)
     await session.commit()
     return {"ok": True}
 
@@ -216,10 +219,10 @@ async def read_dishes(
         session: AsyncSession = Depends(get_session),
         submenu_id: int,
 ):
-    dishes = await session.exec(
+    dishes = await session.execute(
             select(Dish).where(Dish.submenu_id == submenu_id)
-    ).all()
-    return dishes
+    )
+    return dishes.scalars().all()
 
 
 @app.get(
@@ -248,7 +251,7 @@ async def create_dish(
         dish: DishCreate,
         submenu_id: int,
 ):
-    db_dish = await Dish.from_orm(dish)
+    db_dish = Dish.from_orm(dish)
     db_dish.submenu_id = submenu_id
     session.add(db_dish)
     await session.commit()
@@ -271,7 +274,8 @@ async def update_dish(
         raise HTTPException(status_code=404, detail="dish not found")
     dish_data = dish.dict(exclude_unset=True)
     for key, value in dish_data.items():
-        await setattr(db_dish, key, value)
+        setattr(db_dish, key, value)
+    db_dish.price = float(db_dish.price)
     session.add(db_dish)
     await session.commit()
     await session.refresh(db_dish)
@@ -287,6 +291,6 @@ async def delete_dish(
     dish = await session.get(Dish, dish_id)
     if not dish:
         raise HTTPException(status_code=404, detail="dish not found")
-    session.delete(dish)
+    await session.delete(dish)
     await session.commit()
     return {"ok": True}

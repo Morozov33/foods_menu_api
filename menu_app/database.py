@@ -3,8 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
 # Create async engine for DB
-engine = create_async_engine(os.getenv("DATABASE_URL"), echo=True)
+engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
 
 async def get_session() -> AsyncSession:
@@ -15,5 +17,5 @@ async def get_session() -> AsyncSession:
     )
 
     # Return async generator for database connection
-    async with async_session as session:
+    async with async_session() as session:
         yield session
