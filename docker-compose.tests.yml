@@ -8,16 +8,5 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@menu_app:5432/food_menu_db
+      - DATABASE_URL=sqlite://
     command: pytest -vv
-    networks:
-      - test_network
-    depends_on:
-      db_food_menu:
-        condition: service_healthy
-
-
-networks:
-  test_network:
-    external: true
-    name: web_network
