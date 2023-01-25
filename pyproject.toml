@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "foods-menu-api"
+name = "test-task"
 version = "0.1.0"
 description = ""
 authors = ["Dmitrii Morozov <33morozov@gmail.com>"]
