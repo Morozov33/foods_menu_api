@@ -9,11 +9,3 @@
 5. Приложение доступно по адресу: `127.0.0.1:8000`
 6. Остановка контейнеров `make stop`
 7. Запуск контейнеров `make start`
-----
-Скриншот успешных тестов к первому заданию:
-![First test](https://github.com/Morozov33/foods_menu_api/blob/32cbc7212700602e4a10141b0a4daa5b890400c8/screnshoots/first_test_15-01-23.png)  
-
-Скриншот успешной сборки и тестов кo второму заданию:
-![Build](https://github.com/Morozov33/foods_menu_api/blob/7c9659944bd61ee9f60a39410a5acfa8c679a7ae/screnshoots/build-21-01-23.png)
-![Second_test](https://github.com/Morozov33/foods_menu_api/blob/7c9659944bd61ee9f60a39410a5acfa8c679a7ae/screnshoots/second_test_21-01-23.png)
-![Second_test_postman](https://github.com/Morozov33/foods_menu_api/blob/7c9659944bd61ee9f60a39410a5acfa8c679a7ae/screnshoots/second_test_postman_21-01-23.png)
