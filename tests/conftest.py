@@ -11,8 +11,8 @@ async def async_session():
 
     async_engine = create_async_engine(
             "sqlite+aiosqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
     )
 
     async with async_engine.begin() as conn:

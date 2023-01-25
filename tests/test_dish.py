@@ -48,7 +48,10 @@ async def test_create_dish_invalid(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_read_dishes(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_dishes(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -83,7 +86,10 @@ async def test_read_dishes(async_session: AsyncSession, async_client: AsyncClien
 
 
 @pytest.mark.asyncio
-async def test_read_dishes_is_empty(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_dishes_is_empty(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
             title="Submenu 1",
@@ -104,7 +110,10 @@ async def test_read_dishes_is_empty(async_session: AsyncSession, async_client: A
 
 
 @pytest.mark.asyncio
-async def test_read_dish(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_dish(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -127,7 +136,10 @@ async def test_read_dish(async_session: AsyncSession, async_client: AsyncClient)
 
 
 @pytest.mark.asyncio
-async def test_update_dish(async_session: AsyncSession, async_client: AsyncClient):
+async def test_update_dish(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -151,7 +163,10 @@ async def test_update_dish(async_session: AsyncSession, async_client: AsyncClien
 
 
 @pytest.mark.asyncio
-async def test_delete_dish(async_session: AsyncSession, async_client: AsyncClient):
+async def test_delete_dish(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",

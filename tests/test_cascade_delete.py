@@ -5,7 +5,10 @@ from menu_app.main import Menu, Submenu, Dish
 
 
 @pytest.mark.asyncio
-async def test_cascade_delete_menu(async_session: AsyncSession, async_client: AsyncClient):
+async def test_cascade_delete_menu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)
     await async_session.commit()
@@ -102,7 +105,10 @@ async def test_cascade_delete_menu(async_session: AsyncSession, async_client: As
 
 
 @pytest.mark.asyncio
-async def test_cascade_delete_submenu(async_session: AsyncSession, async_client: AsyncClient):
+async def test_cascade_delete_submenu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)
     await async_session.commit()

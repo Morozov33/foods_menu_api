@@ -44,7 +44,10 @@ async def test_create_menu_invalid(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_read_menus(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_menus(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     menu_2 = Menu(title="Menu 2", description="Menu description 1")
     async_session.add(menu_1)
@@ -77,7 +80,10 @@ async def test_read_menus_is_empty(
 
 
 @pytest.mark.asyncio
-async def test_read_menu(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_menu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu_1)
     await async_session.commit()

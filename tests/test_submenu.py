@@ -22,8 +22,10 @@ async def test_create_submenu(async_client: AsyncClient):
 @pytest.mark.asyncio
 async def test_create_submenu_incomplete(async_client: AsyncClient):
     # No description
-    response = await async_client.post("menus/1/submenus",
-                           json={"title": "Menu 1"})
+    response = await async_client.post(
+            "menus/1/submenus",
+            json={"title": "Menu 1"}
+    )
 
     assert response.status_code == 422
 
@@ -43,7 +45,10 @@ async def test_create_submenu_invalid(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_read_submenus(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_submenus(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     submenu_1 = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
@@ -74,7 +79,10 @@ async def test_read_submenus(async_session: AsyncSession, async_client: AsyncCli
 
 
 @pytest.mark.asyncio
-async def test_read_submenus_is_empty(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_submenus_is_empty(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)
     await async_session.commit()
@@ -87,7 +95,10 @@ async def test_read_submenus_is_empty(async_session: AsyncSession, async_client:
 
 
 @pytest.mark.asyncio
-async def test_read_submenu(async_session: AsyncSession, async_client: AsyncClient):
+async def test_read_submenu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
@@ -109,7 +120,10 @@ async def test_read_submenu(async_session: AsyncSession, async_client: AsyncClie
 
 
 @pytest.mark.asyncio
-async def test_update_submenu(async_session: AsyncSession, async_client: AsyncClient):
+async def test_update_submenu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
@@ -131,7 +145,10 @@ async def test_update_submenu(async_session: AsyncSession, async_client: AsyncCl
 
 
 @pytest.mark.asyncio
-async def test_delete_menu(async_session: AsyncSession, async_client: AsyncClient):
+async def test_delete_menu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",

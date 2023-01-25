@@ -5,7 +5,10 @@ from menu_app.main import Menu, Submenu, Dish
 
 
 @pytest.mark.asyncio
-async def test_count_submenus(async_session: AsyncSession, async_client: AsyncClient):
+async def test_count_submenus(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)
     await async_session.commit()
@@ -55,7 +58,10 @@ async def test_count_submenus(async_session: AsyncSession, async_client: AsyncCl
 
 
 @pytest.mark.asyncio
-async def test_count_dishes(async_session: AsyncSession, async_client: AsyncClient):
+async def test_count_dishes(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)
     await async_session.commit()
@@ -104,13 +110,17 @@ async def test_count_dishes(async_session: AsyncSession, async_client: AsyncClie
     assert data["submenus_count"] == 2
     assert data["dishes_count"] == 3
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_1.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_1.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
     assert data["dishes_count"] == 2
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_2.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_2.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
@@ -129,13 +139,17 @@ async def test_count_dishes(async_session: AsyncSession, async_client: AsyncClie
     assert data["submenus_count"] == 2
     assert data["dishes_count"] == 2
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_1.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_1.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
     assert data["dishes_count"] == 1
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_2.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_2.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
@@ -155,13 +169,17 @@ async def test_count_dishes(async_session: AsyncSession, async_client: AsyncClie
     assert data["submenus_count"] == 2
     assert data["dishes_count"] == 1
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_1.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_1.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
     assert data["dishes_count"] == 1
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_2.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_2.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
@@ -181,13 +199,17 @@ async def test_count_dishes(async_session: AsyncSession, async_client: AsyncClie
     assert data["submenus_count"] == 2
     assert data["dishes_count"] == 0
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_1.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_1.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
     assert data["dishes_count"] == 0
 
-    response = await async_client.get(f"menus/{menu.id}/submenus/{submenu_2.id}")
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu_2.id}"
+    )
     data = response.json()
 
     assert response.status_code == 200
