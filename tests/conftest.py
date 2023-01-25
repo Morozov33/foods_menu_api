@@ -1,18 +1,13 @@
-import pytest
-import os
+import pytest_asyncio
 from httpx import AsyncClient
-from sqlmodel import SQLModel
 from sqlmodel.pool import StaticPool
+from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
-from menu_app.main import app
-from menu_app.database import get_session
+from menu_app.main import app, get_session
 
 
-os.environ.get("DATABASE_URL")
-
-@pytest.fixture(name="session")
-async def session():
+@pytest_asyncio.fixture(name="async_session")
+async def async_session():
 
     async_engine = create_async_engine(
             "sqlite+aiosqlite://",
@@ -27,13 +22,18 @@ async def session():
         yield session
 
 
-@pytest.fixture(name="client")
-async def client(session: AsyncSession):
+@pytest_asyncio.fixture(name='async_client')
+async def async_client(async_session: AsyncSession) -> AsyncClient:
 
     async def get_session_override():
-        yield session
+        yield async_session
 
     app.dependency_overrides[get_session] = get_session_override
-    async with AsyncClient(app=app, base_url="http:/") as client:
+
+    async with AsyncClient(
+            app=app,
+            base_url="http://127.0.0.1:8000/api/v1/"
+    ) as client:
         yield client
+
     app.dependency_overrides.clear()

@@ -4,31 +4,36 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu
 
 
+@pytest.mark.asyncio
+async def test_create_menu(async_client: AsyncClient):
 
-@pytest.mark.anyio
-async def test_create_menu(client: AsyncClient):
-    response = await client.post(
-                "/api/v1/menus/",
-                json={"title": "Menu 1", "description": "Menu description 1"},
+    response = await async_client.post(
+            "menus",
+            json={"title": "Menu 1", "description": "Menu description 1"},
     )
-    print(response.headers)
-    assert response.status_code == 307
-    assert response.json()["title"] == "Menu 1"
-    assert response.json()["description"] == "Menu description 1"
+
+    assert response.status_code == 201
+    assert response.json().get("title") == "Menu 1"
 
 
-@pytest.mark.anyio
-async def test_create_menu_incomplete(client: AsyncClient):
-    # No description
-    response = await client.post("/api/v1/menus", json={"title": "Menu 1"})
+@pytest.mark.asyncio
+async def test_create_menu_incomplete(async_client: AsyncClient):
+
+    # No description is json
+    response = await async_client.post(
+            "menus",
+            json={"title": "Menu 1"}
+    )
 
     assert response.status_code == 422
 
 
-async def test_create_menu_invalid(client: AsyncClient):
+@pytest.mark.asyncio
+async def test_create_menu_invalid(async_client: AsyncClient):
+
     # title has an invalid type
-    response = await client.post(
-        "/api/v1/menus",
+    response = await async_client.post(
+        "menus",
         json={
             "title": {"message": "Menu 1"},
             "description": "Menu description 1",
@@ -38,14 +43,15 @@ async def test_create_menu_invalid(client: AsyncClient):
     assert response.status_code == 422
 
 
-async def test_read_menus(session: AsyncSession, client: AsyncClient):
+@pytest.mark.asyncio
+async def test_read_menus(async_session: AsyncSession, async_client: AsyncClient):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
     menu_2 = Menu(title="Menu 2", description="Menu description 1")
-    session.add(menu_1)
-    session.add(menu_2)
-    await session.commit()
+    async_session.add(menu_1)
+    async_session.add(menu_2)
+    await async_session.commit()
 
-    response = await client.get("/api/v1/menus")
+    response = await async_client.get("menus")
     data = response.json()
 
     assert response.status_code == 200
@@ -58,20 +64,25 @@ async def test_read_menus(session: AsyncSession, client: AsyncClient):
     assert data[1]["id"] == str(menu_2.id)
 
 
-async def test_read_menus_is_empty(session: AsyncSession, client: AsyncClient):
-    response = await client.get("/api/v1/menus")
+@pytest.mark.asyncio
+async def test_read_menus_is_empty(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
+    response = await async_client.get("menus")
     data = response.json()
 
     assert response.status_code == 200
     assert len(data) == 0
 
 
-async def test_read_menu(session: AsyncSession, client: AsyncClient):
+@pytest.mark.asyncio
+async def test_read_menu(async_session: AsyncSession, async_client: AsyncClient):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
-    session.add(menu_1)
-    await session.commit()
+    async_session.add(menu_1)
+    await async_session.commit()
 
-    response = await client.get(f"/api/v1/menus/{menu_1.id}")
+    response = await async_client.get(f"menus/{menu_1.id}")
     data = response.json()
 
     assert response.status_code == 200
@@ -80,13 +91,17 @@ async def test_read_menu(session: AsyncSession, client: AsyncClient):
     assert data["id"] == str(menu_1.id)
 
 
-async def test_update_menu(session: AsyncSession, client: AsyncClient):
+@pytest.mark.asyncio
+async def test_update_menu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
-    session.add(menu_1)
-    await session.commit()
+    async_session.add(menu_1)
+    await async_session.commit()
 
-    response = await client.patch(
-            f"/api/v1/menus/{menu_1.id}",
+    response = await async_client.patch(
+            f"menus/{menu_1.id}",
             json={"title": "Update menu 1"},
     )
     data = response.json()
@@ -97,13 +112,17 @@ async def test_update_menu(session: AsyncSession, client: AsyncClient):
     assert data["id"] == str(menu_1.id)
 
 
-async def test_delete_menu(session: AsyncSession, client: AsyncClient):
+@pytest.mark.asyncio
+async def test_delete_menu(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
     menu_1 = Menu(title="Menu 1", description="Menu description 1")
-    session.add(menu_1)
-    await session.commit()
+    async_session.add(menu_1)
+    await async_session.commit()
 
-    response = await client.delete(f"/api/v1/menus/{menu_1.id}")
-    menu_in_db = await session.get(Menu, menu_1.id)
+    response = await async_client.delete(f"menus/{menu_1.id}")
+    menu_in_db = await async_session.get(Menu, menu_1.id)
 
     assert response.status_code == 200
     assert menu_in_db is None
