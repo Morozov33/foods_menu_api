@@ -1,11 +1,13 @@
-from fastapi.testclient import TestClient
-from sqlmodel import Session
+import pytest
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu, Submenu, Dish
 
 
-def test_create_dish(client: TestClient):
-    response = client.post(
-                "/api/v1/menus/1/submenus/1/dishes",
+@pytest.mark.asyncio
+async def test_create_dish(async_client: AsyncClient):
+    response = await async_client.post(
+                "menus/1/submenus/1/dishes",
                 json={
                     "title": "Dish 1",
                     "description": "Dish description 1",
@@ -20,20 +22,22 @@ def test_create_dish(client: TestClient):
     assert data["price"] == "99.99"
 
 
-def test_create_dish_incomplete(client: TestClient):
+@pytest.mark.asyncio
+async def test_create_dish_incomplete(async_client: AsyncClient):
     # No description
-    response = client.post(
-            "/api/v1/menus/1/submenus/1/dishes",
+    response = await async_client.post(
+            "menus/1/submenus/1/dishes",
             json={"title": "Dish 1"}
     )
 
     assert response.status_code == 422
 
 
-def test_create_dish_invalid(client: TestClient):
+@pytest.mark.asyncio
+async def test_create_dish_invalid(async_client: AsyncClient):
     # title has an invalid type
-    response = client.post(
-        "/api/v1/menus/1/submenus/1/dishes",
+    response = await async_client.post(
+        "menus/1/submenus/1/dishes",
         json={
             "title": {"message": "Dish 1"},
             "description": "Dish description 1",
@@ -43,7 +47,8 @@ def test_create_dish_invalid(client: TestClient):
     assert response.status_code == 422
 
 
-def test_read_dishes(session: Session, client: TestClient):
+@pytest.mark.asyncio
+async def test_read_dishes(async_session: AsyncSession, async_client: AsyncClient):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -56,12 +61,12 @@ def test_read_dishes(session: Session, client: TestClient):
         price=33.15,
         submenu_id=1,
     )
-    session.add(dish_1)
-    session.add(dish_2)
-    session.commit()
+    async_session.add(dish_1)
+    async_session.add(dish_2)
+    await async_session.commit()
 
-    response = client.get(
-            f"/api/v1/menus/1/submenus/{dish_1.submenu_id}/dishes"
+    response = await async_client.get(
+            f"menus/1/submenus/{dish_1.submenu_id}/dishes"
     )
     data = response.json()
 
@@ -77,19 +82,20 @@ def test_read_dishes(session: Session, client: TestClient):
     assert data[1]["price"] == "33.15"
 
 
-def test_read_dishes_is_empty(session: Session, client: TestClient):
+@pytest.mark.asyncio
+async def test_read_dishes_is_empty(async_session: AsyncSession, async_client: AsyncClient):
     menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
             menu_id=1
     )
-    session.add(menu)
-    session.add(submenu)
-    session.commit()
+    async_session.add(menu)
+    async_session.add(submenu)
+    await async_session.commit()
 
-    response = client.get(
-            f"/api/v1/menus/{menu.id}/submenus/{submenu.id}/dishes"
+    response = await async_client.get(
+            f"menus/{menu.id}/submenus/{submenu.id}/dishes"
     )
     data = response.json()
 
@@ -97,18 +103,19 @@ def test_read_dishes_is_empty(session: Session, client: TestClient):
     assert len(data) == 0
 
 
-def test_read_dish(session: Session, client: TestClient):
+@pytest.mark.asyncio
+async def test_read_dish(async_session: AsyncSession, async_client: AsyncClient):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
         price=99.99,
         submenu_id=1,
     )
-    session.add(dish_1)
-    session.commit()
+    async_session.add(dish_1)
+    await async_session.commit()
 
-    response = client.get(
-        f"/api/v1/menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}"
+    response = await async_client.get(
+        f"menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}"
     )
     data = response.json()
 
@@ -119,18 +126,19 @@ def test_read_dish(session: Session, client: TestClient):
     assert data["id"] == str(dish_1.id)
 
 
-def test_update_dish(session: Session, client: TestClient):
+@pytest.mark.asyncio
+async def test_update_dish(async_session: AsyncSession, async_client: AsyncClient):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
         price=99.99,
         submenu_id=1
     )
-    session.add(dish_1)
-    session.commit()
+    async_session.add(dish_1)
+    await async_session.commit()
 
-    response = client.patch(
-            f"/api/v1/menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}",
+    response = await async_client.patch(
+            f"menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}",
             json={"title": "Update dish 1"},
     )
     data = response.json()
@@ -142,20 +150,21 @@ def test_update_dish(session: Session, client: TestClient):
     assert data["id"] == dish_1.id
 
 
-def test_delete_dish(session: Session, client: TestClient):
+@pytest.mark.asyncio
+async def test_delete_dish(async_session: AsyncSession, async_client: AsyncClient):
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
         price=99.99,
         submenu_id=1
     )
-    session.add(dish_1)
-    session.commit()
+    async_session.add(dish_1)
+    await async_session.commit()
 
-    response = client.delete(
-            f"/api/v1/menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}",
+    response = await async_client.delete(
+            f"menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}",
     )
-    dish_in_db = session.get(Dish, dish_1.id)
+    dish_in_db = await async_session.get(Dish, dish_1.id)
 
     assert response.status_code == 200
     assert dish_in_db is None

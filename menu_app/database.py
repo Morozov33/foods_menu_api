@@ -1,13 +1,21 @@
 import os
-from sqlmodel import Session, create_engine
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 
 
-# Create engine for DB
-engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+# Create async engine for DB
+engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
 
-def get_session():
+async def get_session() -> AsyncSession:
+    async_session = sessionmaker(
+            engine,
+            class_=AsyncSession,
+            expire_on_commit=False
+    )
 
-    # Return generator for database connection
-    with Session(engine) as session:
+    # Return async generator for database connection
+    async with async_session() as session:
         yield session
