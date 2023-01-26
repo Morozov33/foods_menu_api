@@ -4,8 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu, Submenu
 
 
-@pytest.mark.asyncio
-async def test_create_submenu(async_client: AsyncClient):
+pytestmark = pytest.mark.asyncio
+
+
+async def test_create_submenu(
+        async_session: AsyncSession,
+        async_client: AsyncClient,
+):
     response = await async_client.post(
                 "menus/1/submenus",
                 json={"title": "Submenu 1",
@@ -19,7 +24,6 @@ async def test_create_submenu(async_client: AsyncClient):
     assert data["menu_id"] == 1
 
 
-@pytest.mark.asyncio
 async def test_create_submenu_incomplete(async_client: AsyncClient):
     # No description
     response = await async_client.post(
@@ -30,7 +34,6 @@ async def test_create_submenu_incomplete(async_client: AsyncClient):
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
 async def test_create_submenu_invalid(async_client: AsyncClient):
     # title has an invalid type
     response = await async_client.post(
@@ -44,7 +47,6 @@ async def test_create_submenu_invalid(async_client: AsyncClient):
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
 async def test_read_submenus(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -78,7 +80,6 @@ async def test_read_submenus(
     assert data[1]["menu_id"] == submenu_2.menu_id
 
 
-@pytest.mark.asyncio
 async def test_read_submenus_is_empty(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -94,7 +95,6 @@ async def test_read_submenus_is_empty(
     assert len(data) == 0
 
 
-@pytest.mark.asyncio
 async def test_read_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -119,7 +119,6 @@ async def test_read_submenu(
     assert data["menu_id"] == submenu.menu_id
 
 
-@pytest.mark.asyncio
 async def test_update_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -144,8 +143,7 @@ async def test_update_submenu(
     assert data["id"] == submenu.id
 
 
-@pytest.mark.asyncio
-async def test_delete_menu(
+async def test_delete_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):

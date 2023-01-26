@@ -1,20 +1,20 @@
+import os
 import pytest_asyncio
 from httpx import AsyncClient
-from sqlmodel.pool import StaticPool
 from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from menu_app.main import app, get_session
+from menu_app.database import get_session
+from menu_app.main import app
 
 
-@pytest_asyncio.fixture(name="async_session")
-async def async_session():
+@pytest_asyncio.fixture(name="async_session", scope="function")
+async def async_session() -> AsyncSession:
 
     async_engine = create_async_engine(
-            "sqlite+aiosqlite://",
-            connect_args={"check_same_thread": False},
-            poolclass=StaticPool,
+            os.environ.get('DATABASE_URL'),
+            echo=True,
+            future=True
     )
-
     async with async_engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
@@ -32,7 +32,7 @@ async def async_client(async_session: AsyncSession) -> AsyncClient:
 
     async with AsyncClient(
             app=app,
-            base_url="http://127.0.0.1:8000/api/v1/"
+            base_url=f'http://{os.environ.get("BASE_PREFIX")}',
     ) as client:
         yield client
 

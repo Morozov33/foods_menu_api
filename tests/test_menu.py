@@ -4,7 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu
 
 
-@pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio
+
+
 async def test_create_menu(async_client: AsyncClient):
 
     response = await async_client.post(
@@ -16,7 +18,6 @@ async def test_create_menu(async_client: AsyncClient):
     assert response.json().get("title") == "Menu 1"
 
 
-@pytest.mark.asyncio
 async def test_create_menu_incomplete(async_client: AsyncClient):
 
     # No description is json
@@ -28,7 +29,6 @@ async def test_create_menu_incomplete(async_client: AsyncClient):
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
 async def test_create_menu_invalid(async_client: AsyncClient):
 
     # title has an invalid type
@@ -43,7 +43,6 @@ async def test_create_menu_invalid(async_client: AsyncClient):
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
 async def test_read_menus(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -67,7 +66,6 @@ async def test_read_menus(
     assert data[1]["id"] == str(menu_2.id)
 
 
-@pytest.mark.asyncio
 async def test_read_menus_is_empty(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -79,7 +77,6 @@ async def test_read_menus_is_empty(
     assert len(data) == 0
 
 
-@pytest.mark.asyncio
 async def test_read_menu(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -97,7 +94,6 @@ async def test_read_menu(
     assert data["id"] == str(menu_1.id)
 
 
-@pytest.mark.asyncio
 async def test_update_menu(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -118,7 +114,6 @@ async def test_update_menu(
     assert data["id"] == str(menu_1.id)
 
 
-@pytest.mark.asyncio
 async def test_delete_menu(
         async_session: AsyncSession,
         async_client: AsyncClient

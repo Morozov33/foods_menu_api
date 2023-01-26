@@ -4,7 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu, Submenu, Dish
 
 
-@pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio
+
+
 async def test_create_dish(async_client: AsyncClient):
     response = await async_client.post(
                 "menus/1/submenus/1/dishes",
@@ -22,7 +24,6 @@ async def test_create_dish(async_client: AsyncClient):
     assert data["price"] == "99.99"
 
 
-@pytest.mark.asyncio
 async def test_create_dish_incomplete(async_client: AsyncClient):
     # No description
     response = await async_client.post(
@@ -33,7 +34,6 @@ async def test_create_dish_incomplete(async_client: AsyncClient):
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
 async def test_create_dish_invalid(async_client: AsyncClient):
     # title has an invalid type
     response = await async_client.post(
@@ -47,7 +47,6 @@ async def test_create_dish_invalid(async_client: AsyncClient):
     assert response.status_code == 422
 
 
-@pytest.mark.asyncio
 async def test_read_dishes(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -85,7 +84,6 @@ async def test_read_dishes(
     assert data[1]["price"] == "33.15"
 
 
-@pytest.mark.asyncio
 async def test_read_dishes_is_empty(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -109,7 +107,6 @@ async def test_read_dishes_is_empty(
     assert len(data) == 0
 
 
-@pytest.mark.asyncio
 async def test_read_dish(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -135,7 +132,6 @@ async def test_read_dish(
     assert data["id"] == str(dish_1.id)
 
 
-@pytest.mark.asyncio
 async def test_update_dish(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -162,7 +158,6 @@ async def test_update_dish(
     assert data["id"] == dish_1.id
 
 
-@pytest.mark.asyncio
 async def test_delete_dish(
         async_session: AsyncSession,
         async_client: AsyncClient

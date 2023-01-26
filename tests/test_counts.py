@@ -4,7 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu, Submenu, Dish
 
 
-@pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio
+
+
 async def test_count_submenus(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -57,7 +59,6 @@ async def test_count_submenus(
     assert data["submenus_count"] == 0
 
 
-@pytest.mark.asyncio
 async def test_count_dishes(
         async_session: AsyncSession,
         async_client: AsyncClient

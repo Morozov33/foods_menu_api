@@ -4,7 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from menu_app.main import Menu, Submenu, Dish
 
 
-@pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio
+
+
 async def test_cascade_delete_menu(
         async_session: AsyncSession,
         async_client: AsyncClient
@@ -104,7 +106,6 @@ async def test_cascade_delete_menu(
     assert dish_3_in_db is None
 
 
-@pytest.mark.asyncio
 async def test_cascade_delete_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient
