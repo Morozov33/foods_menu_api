@@ -15,4 +15,4 @@ jobs:
         env:
           DATABASE_URL: "sqlite://"
         run: |
-          make test
+          make localtest
