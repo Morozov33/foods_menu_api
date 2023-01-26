@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlmodel import select, delete
 from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
-from menu_app.database import get_session, engine
+from menu_app.database import get_session, async_engine
 from menu_app.menu_model import (Menu, MenuRead, MenuCreate, MenuUpdate)
 from menu_app.submenu_model import (Submenu, SubmenuRead,
                                     SubmenuCreate, SubmenuUpdate)
@@ -17,7 +17,7 @@ app = FastAPI()
 async def on_shutdown():
 
     # Clear DB when app is shutdown
-    async with AsyncSession(engine) as session:
+    async with AsyncSession(async_engine) as session:
         await session.execute(delete(Dish))
         await session.execute(delete(Submenu))
         await session.execute(delete(Menu))

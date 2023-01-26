@@ -6,12 +6,12 @@ from sqlalchemy.orm import sessionmaker
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 # Create async engine for DB
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+async_engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
 
 async def get_session() -> AsyncSession:
     async_session = sessionmaker(
-            engine,
+            async_engine,
             class_=AsyncSession,
             expire_on_commit=False
     )
