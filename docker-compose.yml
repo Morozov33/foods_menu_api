@@ -4,38 +4,35 @@ services:
 
   menu_app:
     container_name: menu_app
+    env_file:
+      - ./app.env
     build:
       context: .
       dockerfile: Dockerfile
     entrypoint: >
       sh -c "alembic upgrade head &&
-             uvicorn menu_app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+             uvicorn menu_app.main:app --reload --host $${HOST} --port $${PORT}
       "
     networks:
       - web_network
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db_food_menu:5432/food_menu_db
     depends_on:
-      db_food_menu:
+      db:
         condition: service_healthy
-      cache_food_menu:
+      cache:
         condition: service_healthy
 
 
-  db_food_menu:
-    container_name: db_food_menu
+  db:
+    container_name: db
     image: postgres:15.1-alpine
+    env_file:
+      - ./app.env
     expose:
       - 5432
     networks:
       - web_network
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=food_menu_db
-      - POSTGRES_INITDB_ARGS=--auth=md5
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -43,8 +40,8 @@ services:
       retries: 100
 
 
-  cache_food_menu:
-    container_name: cache_food_menu
+  cache:
+    container_name: cache
     image: redis:latest
     expose:
       - 6379

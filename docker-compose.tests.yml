@@ -2,16 +2,19 @@ version: '3.8'
 
 services:
 
-  tests_menu_app:
-    container_name: tests_menu_app
+  test_app:
+    container_name: test_app
+    env_file:
+      - ./test.env
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - DATABASE_URL=sqlite://
+      args:
+        DEV: "--dev"
     command: pytest -vv
-    depends_on:
-      db_food_menu:
-        condition: service_healthy
-      cache_food_menu:
-        condition: service_healthy
+    networks:
+      - test_network
+
+networks:
+  test_network:
+    name: test_network
