@@ -24,7 +24,7 @@ migrate: #make migrations by Alembic
 	poetry run alembic revision --autogenerate -m "migrate"
 
 localtest: #start pytest
-	export DATABASE_URL=sqlite+aiosqlite:// && export BASE_PREFIX='0.0.0.0:8000/api/v1/' && poetry run pytest
+	poetry run pytest
 
 coverage: #start code coverage and write report is xml-file for CodeClimate
 	poetry run pytest --cov-report xml --cov=menu_app tests/

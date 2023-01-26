@@ -13,6 +13,7 @@ jobs:
           poetry install
       - name: tests
         env:
-          DATABASE_URL: "sqlite://"
+          DATABASE_URL: "sqlite+aiosqlite://"
+          BASE_PREFIX: "0.0.0.0:8000/api/v1/"
         run: |
           make localtest

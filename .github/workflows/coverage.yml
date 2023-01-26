@@ -17,6 +17,7 @@ jobs:
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           DATABASE_URL: "sqlite+aiosqlite://"
+          BASE_PREFIX: "0.0.0.0:8000/api/v1/"
           CC_TEST_REPORTER_ID: bf13f88464c7c469a34b22861b3087423ee16ef18478c6e28b05d13dc096f7c5
         with:
           coverageCommand: make coverage
