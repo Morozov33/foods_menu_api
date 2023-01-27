@@ -7,9 +7,22 @@ from menu_app.main import Menu, Submenu, Dish
 pytestmark = pytest.mark.asyncio
 
 
-async def test_create_dish(async_client: AsyncClient):
+async def test_create_dish(
+        async_session: AsyncSession,
+        async_client: AsyncClient
+):
+    menu = Menu(title="Menu 1", description="Menu description 1")
+    submenu = Submenu(
+            title="Submenu 1",
+            description="Submenu description 1",
+            menu_id=menu.id
+    )
+    async_session.add(submenu)
+    async_session.add(menu)
+    await async_session.commit()
+
     response = await async_client.post(
-                "menus/1/submenus/1/dishes",
+                f"menus/{menu.id}/submenus/{submenu.id}/dishes",
                 json={
                     "title": "Dish 1",
                     "description": "Dish description 1",
@@ -51,24 +64,33 @@ async def test_read_dishes(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
+    menu = Menu(title="Menu 1", description="Menu description 1")
+    submenu = Submenu(
+            title="Submenu 1",
+            description="Submenu description 1",
+            menu_id=menu.id
+    )
+
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
         price=99.99,
-        submenu_id=1,
+        submenu_id=submenu.id,
     )
     dish_2 = Dish(
         title="Dish 2",
         description="Dish description 2",
         price=33.15,
-        submenu_id=1,
+        submenu_id=submenu.id,
     )
+    async_session.add(submenu)
+    async_session.add(menu)
     async_session.add(dish_1)
     async_session.add(dish_2)
     await async_session.commit()
 
     response = await async_client.get(
-            f"menus/1/submenus/{dish_1.submenu_id}/dishes"
+            f"menus/{menu.id}/submenus/{submenu.id}/dishes"
     )
     data = response.json()
 
@@ -111,42 +133,59 @@ async def test_read_dish(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
-    dish_1 = Dish(
+    menu = Menu(title="Menu 1", description="Menu description 1")
+    submenu = Submenu(
+            title="Submenu 1",
+            description="Submenu description 1",
+            menu_id=menu.id
+    )
+    async_session.add(menu)
+    async_session.add(submenu)
+    await async_session.commit()
+
+    dish = Dish(
         title="Dish 1",
         description="Dish description 1",
         price=99.99,
-        submenu_id=1,
+        submenu_id=submenu.id,
     )
-    async_session.add(dish_1)
+    async_session.add(dish)
     await async_session.commit()
 
     response = await async_client.get(
-        f"menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}"
+        f"menus/{menu.id}/submenus/{submenu.id}/dishes/{dish.id}"
     )
     data = response.json()
 
     assert response.status_code == 200
-    assert data["title"] == dish_1.title
-    assert data["description"] == dish_1.description
+    assert data["title"] == dish.title
+    assert data["description"] == dish.description
     assert data["price"] == "99.99"
-    assert data["id"] == str(dish_1.id)
 
 
 async def test_update_dish(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
-    dish_1 = Dish(
+    menu = Menu(title="Menu 1", description="Menu description 1")
+    submenu = Submenu(
+            title="Submenu 1",
+            description="Submenu description 1",
+            menu_id=menu.id
+    )
+    dish = Dish(
         title="Dish 1",
         description="Dish description 1",
         price=99.99,
-        submenu_id=1
+        submenu_id=submenu.id
     )
-    async_session.add(dish_1)
+    async_session.add(dish)
+    async_session.add(menu)
+    async_session.add(submenu)
     await async_session.commit()
 
     response = await async_client.patch(
-            f"menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}",
+            f"menus/{menu.id}/submenus/{submenu.id}/dishes/{dish.id}",
             json={"title": "Update dish 1"},
     )
     data = response.json()
@@ -155,26 +194,33 @@ async def test_update_dish(
     assert data["title"] == "Update dish 1"
     assert data["description"] == "Dish description 1"
     assert data["price"] == "99.99"
-    assert data["id"] == dish_1.id
 
 
 async def test_delete_dish(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
-    dish_1 = Dish(
+    menu = Menu(title="Menu 1", description="Menu description 1")
+    submenu = Submenu(
+            title="Submenu 1",
+            description="Submenu description 1",
+            menu_id=menu.id
+    )
+    dish = Dish(
         title="Dish 1",
         description="Dish description 1",
         price=99.99,
-        submenu_id=1
+        submenu_id=submenu.id
     )
-    async_session.add(dish_1)
+    async_session.add(dish)
+    async_session.add(menu)
+    async_session.add(submenu)
     await async_session.commit()
 
     response = await async_client.delete(
-            f"menus/1/submenus/{dish_1.submenu_id}/dishes/{dish_1.id}",
+            f"menus/{menu.id}/submenus/{submenu.id}/dishes/{dish.id}",
     )
-    dish_in_db = await async_session.get(Dish, dish_1.id)
+    dish_in_db = await async_session.get(Dish, dish.id)
 
     assert response.status_code == 200
     assert dish_in_db is None

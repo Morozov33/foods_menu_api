@@ -1,4 +1,5 @@
 version: '3.8'
+name: test
 
 services:
 
@@ -12,8 +13,30 @@ services:
       args:
         DEV: "--dev"
     command: pytest -vv
+    ports:
+      - "8000:8000"
     networks:
       - test_network
+    depends_on:
+      test_db:
+        condition: service_healthy
+
+  test_db:
+    container_name: test_db
+    image: postgres:15.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=test_db
+    expose:
+      - 5432
+    networks:
+      - test_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 10s
+      retries: 100
 
 networks:
   test_network:

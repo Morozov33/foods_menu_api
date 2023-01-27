@@ -12,8 +12,6 @@ async def test_count_submenus(
         async_client: AsyncClient
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
-    async_session.add(menu)
-    await async_session.commit()
     submenu_1 = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
@@ -24,6 +22,7 @@ async def test_count_submenus(
             description="Submenu description 2",
             menu_id=menu.id
     )
+    async_session.add(menu)
     async_session.add(submenu_1)
     async_session.add(submenu_2)
     await async_session.commit()
@@ -64,9 +63,6 @@ async def test_count_dishes(
         async_client: AsyncClient
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
-    async_session.add(menu)
-    await async_session.commit()
-
     submenu_1 = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
@@ -77,10 +73,6 @@ async def test_count_dishes(
             description="Submenu description 2",
             menu_id=menu.id
     )
-    async_session.add(submenu_1)
-    async_session.add(submenu_2)
-    await async_session.commit()
-
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -99,6 +91,9 @@ async def test_count_dishes(
         price=5.20,
         submenu_id=submenu_2.id,
     )
+    async_session.add(menu)
+    async_session.add(submenu_1)
+    async_session.add(submenu_2)
     async_session.add(dish_1)
     async_session.add(dish_2)
     async_session.add(dish_3)

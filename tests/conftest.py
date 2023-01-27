@@ -7,7 +7,7 @@ from menu_app.database import get_session
 from menu_app.main import app
 
 
-@pytest_asyncio.fixture(name="async_session", scope="function")
+@pytest_asyncio.fixture(name="async_session", scope="function", autouse=True)
 async def async_session() -> AsyncSession:
 
     async_engine = create_async_engine(
@@ -22,7 +22,7 @@ async def async_session() -> AsyncSession:
         yield session
 
 
-@pytest_asyncio.fixture(name='async_client')
+@pytest_asyncio.fixture(name='async_client', autouse=True)
 async def async_client(async_session: AsyncSession) -> AsyncClient:
 
     async def get_session_override():
@@ -37,3 +37,20 @@ async def async_client(async_session: AsyncSession) -> AsyncClient:
         yield client
 
     app.dependency_overrides.clear()
+
+
+@pytest_asyncio.fixture(name="clear_db", scope="function", autouse=True)
+async def clear_db():
+
+    yield
+
+    async_engine = create_async_engine(
+            os.environ.get('DATABASE_URL'),
+            echo=True,
+            future=True
+    )
+
+    async with async_engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.drop_all)
+
+    await async_engine.dispose()

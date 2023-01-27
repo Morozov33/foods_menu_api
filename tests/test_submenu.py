@@ -11,17 +11,21 @@ async def test_create_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient,
 ):
+    menu_1 = Menu(title="Menu 1", description="Menu description 1")
+    async_session.add(menu_1)
+    await async_session.commit()
+
     response = await async_client.post(
-                "menus/1/submenus",
+                f"menus/{menu_1.id}/submenus",
                 json={"title": "Submenu 1",
                       "description": "Submenu description 1"},
     )
     data = response.json()
-
+    print(response)
     assert response.status_code == 201
     assert data["title"] == "Submenu 1"
     assert data["description"] == "Submenu description 1"
-    assert data["menu_id"] == 1
+    assert data["menu_id"] == menu_1.id
 
 
 async def test_create_submenu_incomplete(async_client: AsyncClient):
@@ -51,6 +55,8 @@ async def test_read_submenus(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
+    menu_1 = Menu(title="Menu 1", description="Menu description 1")
+    async_session.add(menu_1)
     submenu_1 = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
@@ -61,11 +67,12 @@ async def test_read_submenus(
             description="Submenu description 1",
             menu_id=1
     )
+    async_session.add(menu_1)
     async_session.add(submenu_1)
     async_session.add(submenu_2)
     await async_session.commit()
 
-    response = await async_client.get(f"menus/{submenu_1.menu_id}/submenus")
+    response = await async_client.get(f"menus/{menu_1.id}/submenus")
     data = response.json()
 
     assert response.status_code == 200
@@ -99,16 +106,18 @@ async def test_read_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
+    menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
             menu_id=1
     )
+    async_session.add(menu)
     async_session.add(submenu)
     await async_session.commit()
 
     response = await async_client.get(
-            f"menus/{submenu.menu_id}/submenus/{submenu.id}"
+            f"menus/{menu.id}/submenus/{submenu.id}"
     )
     data = response.json()
 
@@ -123,11 +132,13 @@ async def test_update_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
+    menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
             menu_id=1
     )
+    async_session.add(menu)
     async_session.add(submenu)
     await async_session.commit()
 
@@ -147,12 +158,14 @@ async def test_delete_submenu(
         async_session: AsyncSession,
         async_client: AsyncClient
 ):
+    menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
             menu_id=1
     )
     async_session.add(submenu)
+    async_session.add(menu)
     await async_session.commit()
 
     response = await async_client.delete(

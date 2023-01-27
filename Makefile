@@ -1,5 +1,5 @@
 build: # Building Docker images and start: test, app and db
-	docker compose -f docker-compose.tests.yml -f docker-compose.yml up -d --build
+	docker compose -f docker-compose.yml up -d --build
 
 start: # Start Docker containers: app, db and cache
 	docker compose start menu_app
@@ -8,7 +8,7 @@ stop: # Stop Docker containers
 	docker compose stop menu_app db cashe
 
 test: # Start Docker containers: test_app, test_db and test_cache
-	docker compose -f docker-compose.tests.yml start
+	docker compose -f docker-compose.tests.yml up -d --build
 
 result: # Show tests result
 	docker logs test_app
