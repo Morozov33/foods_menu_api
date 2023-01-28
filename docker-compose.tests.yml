@@ -13,15 +13,17 @@ services:
       args:
         DEV: --dev
     command: pytest -vv
+    ports:
+      - "8000:8000"
     networks:
       - test_network
     depends_on:
-      test-app-db:
+      test_menu_db:
         condition: service_healthy
 
-  test-app-db:
+  test_menu_db:
     image: postgres:15.1-alpine
-    container_name: test-app-db
+    container_name: test_menu_db
     expose:
       - 5432
     env_file:
@@ -38,4 +40,4 @@ services:
 
 networks:
   test_network:
-    external: false
+    name: test_network

@@ -12,8 +12,6 @@ async def test_cascade_delete_menu(
         async_client: AsyncClient
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
-    async_session.add(menu)
-    await async_session.commit()
 
     submenu_1 = Submenu(
             title="Submenu 1",
@@ -25,10 +23,6 @@ async def test_cascade_delete_menu(
             description="Submenu description 2",
             menu_id=menu.id
     )
-    async_session.add(submenu_1)
-    async_session.add(submenu_2)
-    await async_session.commit()
-
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -47,6 +41,9 @@ async def test_cascade_delete_menu(
         price=5.20,
         submenu_id=submenu_2.id,
     )
+    async_session.add(menu)
+    async_session.add(submenu_1)
+    async_session.add(submenu_2)
     async_session.add(dish_1)
     async_session.add(dish_2)
     async_session.add(dish_3)
@@ -63,7 +60,7 @@ async def test_cascade_delete_menu(
     assert response.status_code == 404
 
     response = await async_client.get(
-            f"menus/{submenu_1.menu_id}/submenus/{submenu_1.id}"
+            f"menus/{menu.id}/submenus/{submenu_1.id}"
     )
     submenu_1_in_db = await async_session.get(Submenu, submenu_1.id)
 
@@ -71,7 +68,7 @@ async def test_cascade_delete_menu(
     assert submenu_1_in_db is None
 
     response = await async_client.get(
-            f"menus/{submenu_2.menu_id}/submenus/{submenu_2.id}"
+            f"menus/{menu.id}/submenus/{submenu_2.id}"
     )
     submenu_2_in_db = await async_session.get(Submenu, submenu_2.id)
 
@@ -111,9 +108,6 @@ async def test_cascade_delete_submenu(
         async_client: AsyncClient
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
-    async_session.add(menu)
-    await async_session.commit()
-
     submenu_1 = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
@@ -124,10 +118,6 @@ async def test_cascade_delete_submenu(
             description="Submenu description 2",
             menu_id=menu.id
     )
-    async_session.add(submenu_1)
-    async_session.add(submenu_2)
-    await async_session.commit()
-
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -146,6 +136,9 @@ async def test_cascade_delete_submenu(
         price=5.20,
         submenu_id=submenu_2.id,
     )
+    async_session.add(menu)
+    async_session.add(submenu_1)
+    async_session.add(submenu_2)
     async_session.add(dish_1)
     async_session.add(dish_2)
     async_session.add(dish_3)
@@ -164,7 +157,7 @@ async def test_cascade_delete_submenu(
     assert menu_in_db is not None
 
     response = await async_client.get(
-            f"menus/{submenu_1.menu_id}/submenus/{submenu_1.id}"
+            f"menus/{menu.id}/submenus/{submenu_1.id}"
     )
     submenu_1_in_db = await async_session.get(Submenu, submenu_1.id)
 
@@ -172,7 +165,7 @@ async def test_cascade_delete_submenu(
     assert submenu_1_in_db is None
 
     response = await async_client.get(
-            f"menus/{submenu_2.menu_id}/submenus/{submenu_2.id}"
+            f"menus/{menu.id}/submenus/{submenu_2.id}"
     )
     submenu_2_in_db = await async_session.get(Submenu, submenu_2.id)
 
