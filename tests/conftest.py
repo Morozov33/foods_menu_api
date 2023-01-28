@@ -7,7 +7,7 @@ from menu_app.database import get_session
 from menu_app.main import app
 
 
-@pytest_asyncio.fixture(name="async_session", scope="function", autouse=True)
+@pytest_asyncio.fixture(name="async_session", scope="function")
 async def async_session() -> AsyncSession:
 
     async_engine = create_async_engine(
@@ -22,7 +22,7 @@ async def async_session() -> AsyncSession:
         yield session
 
 
-@pytest_asyncio.fixture(name='async_client', autouse=True)
+@pytest_asyncio.fixture(name='async_client')
 async def async_client(async_session: AsyncSession) -> AsyncClient:
 
     async def get_session_override():
