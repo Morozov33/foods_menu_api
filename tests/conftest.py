@@ -36,7 +36,7 @@ async def async_client(async_session: AsyncSession) -> AsyncClient:
 
     async with AsyncClient(
             app=app,
-            base_url=f'http://BASE_PREFIX',
+            base_url=f'http://{BASE_PREFIX}',
     ) as client:
         yield client
 

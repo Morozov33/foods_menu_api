@@ -13,8 +13,6 @@ services:
       args:
         DEV: --dev
     command: pytest -vv
-    ports:
-      - "8000:8000"
     networks:
       - test_network
     depends_on:

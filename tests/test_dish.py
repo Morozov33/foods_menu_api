@@ -65,12 +65,15 @@ async def test_read_dishes(
         async_client: AsyncClient
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
+    async_session.add(menu)
+    await async_session.commit()
     submenu = Submenu(
             title="Submenu 1",
             description="Submenu description 1",
             menu_id=menu.id
     )
-
+    async_session.add(submenu)
+    await async_session.commit()
     dish_1 = Dish(
         title="Dish 1",
         description="Dish description 1",
@@ -83,8 +86,6 @@ async def test_read_dishes(
         price=33.15,
         submenu_id=submenu.id,
     )
-    async_session.add(submenu)
-    async_session.add(menu)
     async_session.add(dish_1)
     async_session.add(dish_2)
     await async_session.commit()
