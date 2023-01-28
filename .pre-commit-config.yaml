@@ -7,6 +7,13 @@ repos:
       - id: check-yaml
       - id: check-merge-conflict
 
+
+-   repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.9.0
+    hooks:
+    -   id: reorder-python-imports
+
+
 -   repo: local
 
     hooks:
@@ -15,10 +22,3 @@ repos:
         entry: flake8
         language: system
         types: [python]
-
-      - id: reorder-python-imports
-        name: reorder-python-imports
-        entry: reorder-python-imports
-        language: system
-        types: [python]
-        args: [--py37-plus]
