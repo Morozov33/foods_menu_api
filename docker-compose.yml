@@ -46,6 +46,8 @@ services:
     image: redis:latest
     expose:
       - 6379
+    env_file:
+      - "app.env"
     networks:
       - web_network
     healthcheck:
