@@ -7,11 +7,15 @@ from menu_app.database import get_session
 from menu_app.main import app
 
 
+BASE_PREFIX = f"{os.environ.get('HOST')}:{os.environ.get('PORT')}/api/v1/"
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+
 @pytest_asyncio.fixture(name="async_session", scope="function")
 async def async_session() -> AsyncSession:
 
     async_engine = create_async_engine(
-            os.environ.get('DATABASE_URL'),
+            DATABASE_URL,
             echo=True,
             future=True
     )
@@ -32,7 +36,7 @@ async def async_client(async_session: AsyncSession) -> AsyncClient:
 
     async with AsyncClient(
             app=app,
-            base_url=f'http://{os.environ.get("BASE_PREFIX")}',
+            base_url=f'http://BASE_PREFIX',
     ) as client:
         yield client
 

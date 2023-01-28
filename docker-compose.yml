@@ -1,17 +1,18 @@
 version: '3.8'
+name: food_menu
 
 services:
 
   menu_app:
     container_name: menu_app
     env_file:
-      - ./app.env
+      - app.env
     build:
       context: .
       dockerfile: Dockerfile
     entrypoint: >
       sh -c "alembic upgrade head &&
-             uvicorn menu_app.main:app --reload --host $${HOST} --port $${PORT}
+             uvicorn menu_app.main:app --reload --host 0.0.0.0 --port 8000
       "
     networks:
       - web_network
@@ -28,7 +29,7 @@ services:
     container_name: db
     image: postgres:15.1-alpine
     env_file:
-      - ./app.env
+      - app.env
     expose:
       - 5432
     networks:

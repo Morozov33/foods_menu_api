@@ -1,20 +1,41 @@
 version: '3.8'
+name: food_menu_test
 
 services:
 
   test_app:
     container_name: test_app
     env_file:
-      - ./test.env
+      - "test.env"
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        DEV: "--dev"
+        DEV: --dev
     command: pytest -vv
     networks:
       - test_network
+    depends_on:
+      test-app-db:
+        condition: service_healthy
+
+  test-app-db:
+    image: postgres:15.1-alpine
+    container_name: test-app-db
+    expose:
+      - 5432
+    env_file:
+      - "test.env"
+    restart: on-failure
+    networks:
+      - test_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
 networks:
   test_network:
-    name: test_network
+    external: false
