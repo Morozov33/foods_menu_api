@@ -1,11 +1,13 @@
-from sqlmodel import SQLModel
 from fastapi import HTTPException
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from sqlalchemy import func
-from menu_app.submenu_model import Submenu
-from menu_app.dish_model import Dish
+from sqlmodel import SQLModel
+
+from menu_app.cache.cache import Cache
 from menu_app.crud.crud_base import Crud_Base
+from menu_app.dish_model import Dish
+from menu_app.submenu_model import Submenu
 
 
 class MenuCrud(Crud_Base):
@@ -29,6 +31,11 @@ class MenuCrud(Crud_Base):
 
     @classmethod
     async def get(cls, db: AsyncSession, model: SQLModel, id: int):
+        cached_model = await Cache.get_data(f"{model.__name__.lower()}:{id}")
+
+        if cached_model:
+            return cached_model
+
         result = await db.get(model, id)
 
         if not result:
@@ -41,5 +48,28 @@ class MenuCrud(Crud_Base):
         db.add(result)
         await db.commit()
         await db.refresh(result)
+        await Cache.save(f"{model.__name__.lower()}:{id}", result)
 
         return await db.get(model, id)
+
+    @classmethod
+    async def get_list(cls, db: AsyncSession, model: SQLModel):
+        cached_model = await Cache.get_data(f"{model.__name__.lower()}")
+
+        if cached_model:
+            return cached_model
+
+        menus = await db.execute(select(model))
+        result_data = list()
+        for menu in menus.scalars().all():
+            await cls.count_submenus(db, menu)
+            await cls.count_dishes(db, menu)
+            db.add(menu)
+            await db.commit()
+            await db.refresh(menu)
+
+            result_data.append(menu)
+
+        await Cache.save(f"{model.__name__.lower()}", result_data)
+
+        return result_data

@@ -1,15 +1,27 @@
 from typing import List
-from fastapi import FastAPI, Depends
+
+from fastapi import Depends
+from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
-from menu_app.database import get_session, clear_db
-from menu_app.menu_model import Menu, MenuRead, MenuCreate, MenuUpdate
-from menu_app.submenu_model import (Submenu, SubmenuRead,
-                                    SubmenuCreate, SubmenuUpdate)
-from menu_app.dish_model import Dish, DishRead, DishCreate, DishUpdate
+
+from menu_app.cache.cache import Cache
+from menu_app.crud.crud_dish import DishCrud
 from menu_app.crud.crud_menu import MenuCrud
 from menu_app.crud.crud_submenu import SubmenuCrud
-from menu_app.crud.crud_dish import DishCrud
-
+from menu_app.database import clear_db
+from menu_app.database import get_session
+from menu_app.dish_model import Dish
+from menu_app.dish_model import DishCreate
+from menu_app.dish_model import DishRead
+from menu_app.dish_model import DishUpdate
+from menu_app.menu_model import Menu
+from menu_app.menu_model import MenuCreate
+from menu_app.menu_model import MenuRead
+from menu_app.menu_model import MenuUpdate
+from menu_app.submenu_model import Submenu
+from menu_app.submenu_model import SubmenuCreate
+from menu_app.submenu_model import SubmenuRead
+from menu_app.submenu_model import SubmenuUpdate
 
 app = FastAPI()
 
@@ -17,6 +29,7 @@ app = FastAPI()
 @app.on_event("shutdown")
 async def on_shutdown():
     await clear_db()
+    await Cache.clear()
 
 
 @app.get("/")

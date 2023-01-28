@@ -1,11 +1,13 @@
-from sqlmodel import SQLModel
 from fastapi import HTTPException
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from sqlalchemy import func
-from menu_app.submenu_model import SubmenuCreate
-from menu_app.dish_model import Dish
+from sqlmodel import SQLModel
+
+from menu_app.cache.cache import Cache
 from menu_app.crud.crud_base import Crud_Base
+from menu_app.dish_model import Dish
+from menu_app.submenu_model import SubmenuCreate
 
 
 class SubmenuCrud(Crud_Base):
@@ -21,6 +23,10 @@ class SubmenuCrud(Crud_Base):
 
     @classmethod
     async def get(cls, db: AsyncSession, model: SQLModel, id: int):
+        cached_model = await Cache.get_data(f"{model.__name__.lower()}:{id}")
+
+        if cached_model:
+            return cached_model
 
         result = await db.get(model, id)
         if not result:
@@ -32,11 +38,21 @@ class SubmenuCrud(Crud_Base):
         db.add(result)
         await db.commit()
         await db.refresh(result)
+        await Cache.save(f"{model.__name__.lower()}:{id}", result)
+
         return await db.get(model, id)
 
     async def get_list(db: AsyncSession, model: SQLModel, id: int = None):
+        cached_model = await Cache.get_data(f"{model.__name__.lower()}")
+
+        if cached_model:
+            return cached_model
+
         result = await db.execute(select(model).where(model.menu_id == id))
-        return result.scalars().all()
+        result_data = result.scalars().all()
+        await Cache.save(f"{model.__name__.lower()}", result_data)
+
+        return result_data
 
     async def create(
             db: AsyncSession,
@@ -49,4 +65,6 @@ class SubmenuCrud(Crud_Base):
         db.add(result)
         await db.commit()
         await db.refresh(result)
+        await Cache.clear(f"{model.__name__.lower()}")
+
         return result

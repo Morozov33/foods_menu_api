@@ -1,16 +1,28 @@
-from sqlmodel import SQLModel
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from menu_app.dish_model import Dish, DishCreate, DishUpdate
+from sqlmodel import SQLModel
+
+from menu_app.cache.cache import Cache
 from menu_app.crud.crud_base import Crud_Base
+from menu_app.dish_model import Dish
+from menu_app.dish_model import DishCreate
+from menu_app.dish_model import DishUpdate
 
 
 class DishCrud(Crud_Base):
 
     async def get_list(db: AsyncSession, model: SQLModel, id: int = None):
+        cached_model = await Cache.get_data(f"{model.__name__.lower()}")
+
+        if cached_model:
+            return cached_model
+
         result = await db.execute(select(model).where(model.submenu_id == id))
-        return result.scalars().all()
+        result_data = result.scalars().all()
+        await Cache.save(f"{model.__name__.lower()}", result_data)
+
+        return result_data
 
     async def create(
             db: AsyncSession,
@@ -23,6 +35,8 @@ class DishCrud(Crud_Base):
         db.add(result)
         await db.commit()
         await db.refresh(result)
+        await Cache.clear(f"{model.__name__.lower()}")
+
         return result
 
     async def update(
@@ -41,4 +55,7 @@ class DishCrud(Crud_Base):
         db.add(result)
         await db.commit()
         await db.refresh(result)
+        await Cache.save(f"{model.__name__.lower()}:{id}", result)
+        await Cache.clear(f"{model.__name__.lower()}")
+
         return result
