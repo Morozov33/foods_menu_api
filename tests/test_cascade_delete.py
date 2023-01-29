@@ -1,7 +1,10 @@
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from menu_app.main import Menu, Submenu, Dish
+
+from menu_app.main import Dish
+from menu_app.main import Menu
+from menu_app.main import Submenu
 
 
 pytestmark = pytest.mark.asyncio
@@ -9,7 +12,7 @@ pytestmark = pytest.mark.asyncio
 
 async def test_cascade_delete_menu(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)
@@ -108,7 +111,7 @@ async def test_cascade_delete_menu(
 
 async def test_cascade_delete_submenu(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)

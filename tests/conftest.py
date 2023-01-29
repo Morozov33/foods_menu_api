@@ -1,14 +1,30 @@
+import asyncio
 import os
+
 import pytest_asyncio
+from aioredis import from_url
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import SQLModel
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
 from menu_app.database import get_session
 from menu_app.main import app
 
 
 BASE_PREFIX = f"{os.environ.get('HOST')}:{os.environ.get('PORT')}/api/v1/"
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
+
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
+def event_loop():
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest_asyncio.fixture(name="async_session", scope="function")
@@ -58,3 +74,15 @@ async def clear_db():
         await conn.run_sync(SQLModel.metadata.drop_all)
 
     await async_engine.dispose()
+
+
+@pytest_asyncio.fixture(name="cache", scope="function", autouse=True)
+async def cache():
+
+    yield
+
+    cache = from_url(
+            os.environ.get('CACHE_URL'),
+            encoding='latin-1',
+            decode_responses=False)
+    await cache.flushdb(asynchronous=True)

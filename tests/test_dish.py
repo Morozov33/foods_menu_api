@@ -1,7 +1,10 @@
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from menu_app.main import Menu, Submenu, Dish
+
+from menu_app.main import Dish
+from menu_app.main import Menu
+from menu_app.main import Submenu
 
 
 pytestmark = pytest.mark.asyncio
@@ -9,7 +12,7 @@ pytestmark = pytest.mark.asyncio
 
 async def test_create_dish(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
@@ -62,7 +65,7 @@ async def test_create_dish_invalid(async_client: AsyncClient):
 
 async def test_read_dishes(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     async_session.add(menu)
@@ -109,7 +112,7 @@ async def test_read_dishes(
 
 async def test_read_dishes_is_empty(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
@@ -132,7 +135,7 @@ async def test_read_dishes_is_empty(
 
 async def test_read_dish(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
@@ -166,7 +169,7 @@ async def test_read_dish(
 
 async def test_update_dish(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
@@ -199,7 +202,7 @@ async def test_update_dish(
 
 async def test_delete_dish(
         async_session: AsyncSession,
-        async_client: AsyncClient
+        async_client: AsyncClient,
 ):
     menu = Menu(title="Menu 1", description="Menu description 1")
     submenu = Submenu(
