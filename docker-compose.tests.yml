@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        DEV: --dev
+        DEV: "--with test"
     command: pytest -vv
     networks:
       - test_network
@@ -42,6 +42,9 @@ services:
     image: redis:latest
     expose:
       - 6379
+    restart: on-failure
+    env_file:
+      - "test.env"
     networks:
       - test_network
     healthcheck:
@@ -53,4 +56,4 @@ services:
 
 networks:
   test_network:
-    name: test_network
+    external: false
