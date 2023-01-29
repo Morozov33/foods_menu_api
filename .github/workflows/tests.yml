@@ -15,5 +15,6 @@ jobs:
         env:
           DATABASE_URL: "sqlite+aiosqlite://"
           BASE_PREFIX: "0.0.0.0:8000/api/v1/"
+          CACHE_URL: "redis://localhost"
         run: |
           make localtest
