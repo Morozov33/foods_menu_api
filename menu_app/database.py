@@ -1,10 +1,13 @@
 import os
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import delete
-from menu_app.menu_model import Menu
-from menu_app.submenu_model import Submenu
-from menu_app.dish_model import Dish
+
+from menu_app.models.dish_model import Dish
+from menu_app.models.menu_model import Menu
+from menu_app.models.submenu_model import Submenu
 
 
 DATABASE_URL = os.environ.get("DATABASE_URL")

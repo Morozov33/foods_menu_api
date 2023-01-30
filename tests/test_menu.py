@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from menu_app.main import Menu
+from menu_app.models.menu_model import Menu
 
 
 pytestmark = pytest.mark.asyncio

@@ -1,5 +1,10 @@
-from typing import TYPE_CHECKING, Optional, List
-from sqlmodel import Field, Relationship, SQLModel
+from typing import List
+from typing import Optional
+from typing import TYPE_CHECKING
+
+from sqlmodel import Field
+from sqlmodel import Relationship
+from sqlmodel import SQLModel
 
 if TYPE_CHECKING:
     from menu_app.submenu_model import Submenu
@@ -12,6 +17,16 @@ class MenuBase(SQLModel):
     description: str
     submenus_count: Optional[int] = None
     dishes_count: Optional[int] = None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "title": "Menu 1",
+                "description": "Menu description 1",
+                "submenus_count": "3",
+                "dishes_count": "7"
+                }
+        }
 
 
 class Menu(MenuBase, table=True):

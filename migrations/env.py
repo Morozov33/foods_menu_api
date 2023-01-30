@@ -1,25 +1,27 @@
-import os
 import asyncio
+import os
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel import SQLModel
 
-from alembic import context
-
-from menu_app.menu_model import Menu
-from menu_app.submenu_model import Submenu
-from menu_app.dish_model import Dish
+from menu_app.models.dish_model import Dish
+from menu_app.models.menu_model import Menu
+from menu_app.models.submenu_model import Submenu
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "DATABASE_URL", os.environ.get("DATABASE_URL"))
+config.set_section_option(
+        section, "DATABASE_URL",
+        os.environ.get("DATABASE_URL")
+)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

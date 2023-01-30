@@ -3,11 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from sqlmodel import SQLModel
 
-from menu_app.cache.cache import Cache
+from menu_app.cache import Cache
 from menu_app.crud.crud_base import Crud_Base
-from menu_app.dish_model import Dish
-from menu_app.dish_model import DishCreate
-from menu_app.dish_model import DishUpdate
+from menu_app.models.dish_model import Dish
+from menu_app.models.dish_model import DishCreate
+from menu_app.models.dish_model import DishUpdate
 
 
 class DishCrud(Crud_Base):

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from sqlmodel import SQLModel
 
-from menu_app.cache.cache import Cache
+from menu_app.cache import Cache
 
 
 class Crud_Base():
