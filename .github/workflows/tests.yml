@@ -25,12 +25,13 @@ jobs:
 
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
       - name: install dependecies
         run: |
           pip install poetry
           poetry install
+
       - name: Connect to Redis
         # Runs a script that creates a Redis client, populates
         # the client with data, and retrieves data
@@ -38,13 +39,14 @@ jobs:
         # Environment variable used by the `client.js` script to create a new Redis client.
         env:
           # The hostname used to communicate with the Redis service container
-          REDIS_HOST: localhost
+          REDIS_HOST: redis
           # The default Redis port
           REDIS_PORT: 6379
+
       - name: tests
         env:
           DATABASE_URL: "sqlite+aiosqlite://"
           BASE_PREFIX: "0.0.0.0:8000/api/v1/"
-          CACHE_URL: "redis://localhost"
+          CACHE_URL: "redis://redis"
         run: |
           make localtest
