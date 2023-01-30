@@ -1,9 +1,29 @@
 name: tests
   # run tests
 on: [push]
+
 jobs:
-  build:
-    runs-on: macos-12
+  # Label of the container job
+  container-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `container-job` executes in
+    container: node:10.18-jessie
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -11,6 +31,16 @@ jobs:
         run: |
           pip install poetry
           poetry install
+      - name: Connect to Redis
+        # Runs a script that creates a Redis client, populates
+        # the client with data, and retrieves data
+        run: node client.js
+        # Environment variable used by the `client.js` script to create a new Redis client.
+        env:
+          # The hostname used to communicate with the Redis service container
+          REDIS_HOST: localhost
+          # The default Redis port
+          REDIS_PORT: 6379
       - name: tests
         env:
           DATABASE_URL: "sqlite+aiosqlite://"

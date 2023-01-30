@@ -14,7 +14,7 @@ localstart: # Use last migration and local start uvicorn server for app
 	export DATABASE_URL=postgresql+asyncpg://postgres@localhost:5433/food_menu_db && export CACHE_URL=redis://localhost && poetry run alembic upgrade head && poetry run uvicorn menu_app.main:app --reload
 
 localtest: #start pytest
-	export DATABASE_URL=postgresql+asyncpg://postgres@localhost:5433/food_menu_db && export CACHE_URL=redis://localhost && poetry run pytest -vv
+	poetry run pytest -vv
 
 lint: #linter for code
 	poetry run flake8 menu_app tests
