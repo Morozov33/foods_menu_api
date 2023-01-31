@@ -9,3 +9,4 @@
 5. `make test` собирает и запускает тесты
 6. Результаты тестов: `make result`
 7. Остановка приложения: `make stop`
+8. Запуск pre-commit хуков командой `make pre-commit`
