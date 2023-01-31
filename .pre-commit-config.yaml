@@ -19,7 +19,7 @@ repos:
     hooks:
       - id: flake8
         name: flake8
-        exclude: ^migrations/env.py
+        exclude: migrations/
         entry: flake8
         language: system
         types: [python]

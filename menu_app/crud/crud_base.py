@@ -8,7 +8,16 @@ from menu_app.cache import Cache
 
 class Crud_Base():
 
-    async def get(db: AsyncSession, model: SQLModel, id: int):
+    @staticmethod
+    async def count_dishes(db: AsyncSession, model: SQLModel):
+        pass
+
+    @staticmethod
+    async def count_submenus(db: AsyncSession, model: SQLModel):
+        pass
+
+    @classmethod
+    async def get(cls, db: AsyncSession, model: SQLModel, id: int):
         cached_model = await Cache.get_data(f"{model.__name__.lower()}:{id}")
 
         if cached_model:
@@ -23,7 +32,8 @@ class Crud_Base():
         await Cache.save(f"{model.__name__.lower()}:{id}", result)
         return result
 
-    async def get_list(db: AsyncSession, model: SQLModel):
+    @classmethod
+    async def get_list(cls, db: AsyncSession, model: SQLModel):
         cached_model = await Cache.get_data(f"{model.__name__.lower()}")
 
         if cached_model:

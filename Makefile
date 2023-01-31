@@ -17,7 +17,10 @@ localtest: #start pytest
 	poetry run pytest -vv
 
 lint: #linter for code
-	poetry run flake8 menu_app tests
+	poetry run flake8 menu_app/ tests/
+
+pre-commit: # Run pre-commit
+	poetry run pre-commit run --all-files
 
 migrate: #make migrations by Alembic
 	export DATABASE_URL=postgresql+asyncpg://postgres@localhost/food_menu_db &&

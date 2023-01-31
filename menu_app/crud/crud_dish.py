@@ -12,7 +12,8 @@ from menu_app.models.dish_model import DishUpdate
 
 class DishCrud(Crud_Base):
 
-    async def get_list(db: AsyncSession, model: SQLModel, id: int = None):
+    @classmethod
+    async def get_list(cls, db: AsyncSession, model: SQLModel, id: int = None):
         cached_model = await Cache.get_data(f"{model.__name__.lower()}")
 
         if cached_model:
